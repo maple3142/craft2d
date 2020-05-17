@@ -101,28 +101,20 @@ public class Game {
 
         int wBlocks = width / blockWidth;
         if (player.position.x - leftX > wBlocks * 0.7) {
-            while (player.position.x - leftX > wBlocks * 0.7) {
-                leftX += 0.01;
-            }
+            leftX += (player.position.x - leftX - wBlocks * 0.7);
             anyChanged = true;
         }
         if (player.position.x - leftX < wBlocks * 0.3) {
-            while (player.position.x - leftX < wBlocks * 0.3) {
-                leftX -= 0.01;
-            }
+            leftX += (player.position.x - leftX - wBlocks * 0.3);
             anyChanged = true;
         }
         int hBlocks = height / blockHeight;
         if (player.position.y - bottomY > hBlocks * 0.7) {
-            while (player.position.y - bottomY > hBlocks * 0.7) {
-                bottomY += 0.01;
-            }
+            bottomY += (player.position.y - bottomY - hBlocks * 0.7);
             anyChanged = true;
         }
         if (player.position.y - bottomY < hBlocks * 0.3) {
-            while (player.position.y - bottomY < hBlocks * 0.3) {
-                bottomY -= 0.01;
-            }
+            bottomY += (player.position.y - bottomY - hBlocks * 0.3);
             anyChanged = true;
         }
         return anyChanged;
@@ -151,8 +143,8 @@ public class Game {
 
         player.inventory.drawInventoryBar(uiCtx, width, height);
 
-        double topY = bottomY + (double)(height / blockHeight);
-        double rightX = leftX + (double)(width / blockWidth);
+        double topY = bottomY + (double) (height / blockHeight);
+        double rightX = leftX + (double) (width / blockWidth);
         player.draw(entityCtx, leftX, topY);
 
         {
@@ -197,7 +189,7 @@ public class Game {
         double x = event.getX();
         double y = event.getY();
         double bx = (leftX + x / blockWidth);
-        double by = bottomY + (double)(height / blockHeight) - (y / blockHeight); // don't change it to (height - y) / blockHeight
+        double by = bottomY + (double) (height / blockHeight) - (y / blockHeight); // don't change it to (height - y) / blockHeight
         if (event.getButton() == MouseButton.PRIMARY) {
             world.blocks[(int) by][(int) bx] = null;
         } else if (event.getButton() == MouseButton.SECONDARY) {
