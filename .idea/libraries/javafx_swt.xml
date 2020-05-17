@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="javafx-swt">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx-swt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.base.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.controls.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.fxml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.graphics.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.media.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.swing.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Program Files/Java/openjfx14-sdk/lib/javafx.web.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
