@@ -9,13 +9,12 @@ public class Main extends Application {
     public void start(Stage stage) {
         var game = new Game();
         stage.setTitle("Test");
-        stage.setMinHeight(800);
-        stage.setMinWidth(600);
+        stage.setMinHeight(768);
+        stage.setMinWidth(1024);
         stage.setScene(game.getScene());
         stage.show();
         game.start();
     }
-
 
     public static void main(String[] args) {
         launch(args);

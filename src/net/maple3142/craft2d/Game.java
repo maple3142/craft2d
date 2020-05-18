@@ -6,9 +6,11 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import net.maple3142.craft2d.item.*;
 
 import java.util.HashSet;
@@ -21,12 +23,19 @@ public class Game {
     private DoubleProperty heightProperty = new SimpleDoubleProperty();
     private Scene scene;
     private Pane root;
+    private Pane gameLayer;
+    private Pane uiBgLayer;
+    private Pane uiLayer;
     private Canvas mainCanvas;
     private GraphicsContext mainCtx;
     private Canvas entityCanvas;
     private GraphicsContext entityCtx;
     private Canvas sunCanvas;
     private GraphicsContext sunCtx;
+    private Canvas invBarCanvas;
+    private GraphicsContext invBarCtx;
+    private Canvas uiBgCanvas;
+    private GraphicsContext uiBgCtx;
     private Canvas uiCanvas;
     private GraphicsContext uiCtx;
 
@@ -36,6 +45,8 @@ public class Game {
     private double leftX = world.spawnX - 10;
     private double bottomY = World.worldHeight;
 
+    private UiOpenable currentUi = null;
+
     public Game() {
         this.mainCanvas = new Canvas();
         this.mainCtx = mainCanvas.getGraphicsContext2D();
@@ -43,16 +54,29 @@ public class Game {
         this.entityCtx = entityCanvas.getGraphicsContext2D();
         this.sunCanvas = new Canvas();
         this.sunCtx = sunCanvas.getGraphicsContext2D();
+        this.invBarCanvas = new Canvas();
+        this.invBarCtx = invBarCanvas.getGraphicsContext2D();
+
+        this.uiBgCanvas = new Canvas();
+        this.uiBgCtx = uiBgCanvas.getGraphicsContext2D();
+
         this.uiCanvas = new Canvas();
         this.uiCtx = uiCanvas.getGraphicsContext2D();
+
         this.root = new Pane();
-        this.scene = new Scene(root);
-        root.getChildren().addAll(sunCanvas, mainCanvas, entityCanvas, uiCanvas);
+        this.gameLayer = new Pane();
+        this.uiBgLayer = new Pane();
+        this.uiLayer = new Pane();
+        this.root.getChildren().addAll(gameLayer, uiBgLayer, uiLayer);
         root.setOnKeyPressed(this::onKeyPressed);
         root.setOnKeyReleased(this::onKeyReleased);
         root.setOnMouseClicked(this::onMouseClicked);
         root.setOnScroll(this::onScroll);
+        this.scene = new Scene(root);
 
+        gameLayer.getChildren().addAll(sunCanvas, mainCanvas, entityCanvas, invBarCanvas);
+        uiBgLayer.getChildren().addAll(uiBgCanvas);
+        uiLayer.getChildren().addAll(uiCanvas);
 
         heightProperty.bind(scene.heightProperty());
         widthProperty.bind(scene.widthProperty());
@@ -62,6 +86,12 @@ public class Game {
         entityCanvas.widthProperty().bind(scene.widthProperty());
         sunCanvas.heightProperty().bind(scene.heightProperty());
         sunCanvas.widthProperty().bind(scene.widthProperty());
+        invBarCanvas.heightProperty().bind(scene.heightProperty());
+        invBarCanvas.widthProperty().bind(scene.widthProperty());
+
+        uiBgCanvas.heightProperty().bind(scene.heightProperty());
+        uiBgCanvas.widthProperty().bind(scene.widthProperty());
+
         uiCanvas.heightProperty().bind(scene.heightProperty());
         uiCanvas.widthProperty().bind(scene.widthProperty());
     }
@@ -86,6 +116,12 @@ public class Game {
         player.inventory.storage[1] = stk;
         player.inventory.storage[8] = new ItemStack(new GrassBlock());
         player.inventory.storage[9] = new ItemStack(new StoneBlock());
+        player.inventory.storage[17] = new ItemStack(new StoneBlock());
+        player.inventory.storage[17] = new ItemStack(new StoneBlock());
+        player.inventory.storage[21] = new ItemStack(new StoneBlock());
+        player.inventory.storage[25] = new ItemStack(new GrassBlock());
+        player.inventory.storage[28] = new ItemStack(new StoneBlock());
+        player.inventory.storage[35] = new ItemStack(new DirtBlock());
     }
 
     public Scene getScene() {
@@ -124,24 +160,44 @@ public class Game {
         int timeMs = (int) (time / 1000000);
         int dt = timeMs - lastTimeMs;
         lastTimeMs = timeMs;
-        if (pressedKeys.contains(KeyCode.D)) {
-            player.moveRight();
+
+        // move player
+        {
+            if (currentUi == null) {
+                if (pressedKeys.contains(KeyCode.D)) {
+                    player.moveRight();
+                }
+                if (pressedKeys.contains(KeyCode.A)) {
+                    player.moveLeft();
+                }
+                if (pressedKeys.contains(KeyCode.W) || pressedKeys.contains(KeyCode.SPACE)) {
+                    player.jump();
+                }
+            }
         }
-        if (pressedKeys.contains(KeyCode.A)) {
-            player.moveLeft();
-        }
-        if (pressedKeys.contains(KeyCode.W) || pressedKeys.contains(KeyCode.SPACE)) {
-            player.jump();
-        }
-        player.loop(dt);
+        player.processMovement(dt);
+
         int width = (int) widthProperty.get();
         int height = (int) heightProperty.get();
         boolean isCameraMoved = moveCameraAccordingToPlayer(width, height);
 
         entityCtx.clearRect(0, 0, width, height);
-        uiCtx.clearRect(0, 0, width, height);
+        invBarCtx.clearRect(0, 0, width, height);
 
-        player.inventory.drawInventoryBar(uiCtx, width, height);
+        player.inventory.drawInventoryBar(invBarCtx, width, height);
+
+        // ui rendering
+        {
+            uiBgCtx.clearRect(0, 0, width, height);
+            uiCtx.clearRect(0, 0, width, height);
+            if (currentUi != null) {
+                uiBgLayer.setBlendMode(BlendMode.DARKEN);
+                uiBgCtx.setFill(Color.rgb(64, 64, 64, 0.5));
+                uiBgCtx.fillRect(0, 0, width, height);
+                currentUi.drawUi(uiCtx, width, height);
+            }
+        }
+
 
         double topY = bottomY + (double) (height / blockHeight);
         double rightX = leftX + (double) (width / blockWidth);
@@ -182,9 +238,39 @@ public class Game {
 
     public void onKeyPressed(KeyEvent event) {
         pressedKeys.add(event.getCode());
+
+        if (currentUi == null) {
+            gameOnKeyPressed(event);
+        } else {
+            uiOnKeyPressed(event);
+        }
     }
 
     public void onMouseClicked(MouseEvent event) {
+        if (currentUi == null) {
+            gameOnMouseClicked(event);
+        }
+    }
+
+    public void onScroll(ScrollEvent event) {
+        if (currentUi == null) {
+            gameOnScroll(event);
+        }
+    }
+
+    public void uiOnKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.E) {
+            currentUi = null;
+        }
+    }
+
+    public void gameOnKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.E) {
+            currentUi = player.inventory;
+        }
+    }
+
+    public void gameOnMouseClicked(MouseEvent event) {
         int height = (int) heightProperty.get();
         double x = event.getX();
         double y = event.getY();
@@ -203,7 +289,7 @@ public class Game {
         }
     }
 
-    public void onScroll(ScrollEvent event) {
+    public void gameOnScroll(ScrollEvent event) {
         if (event.getDeltaY() > 0) {
             player.inventory.moveSelectionToLeft();
         } else {

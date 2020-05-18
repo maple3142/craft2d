@@ -18,7 +18,7 @@ public class Player {
         this.world = world;
     }
 
-    public void loop(int dt) {
+    public void processMovement(int dt) {
         if (bottomIsEmpty()) {
             velocity.plus(Vector2.multiply(gravityAcceleration, dt));
         }
