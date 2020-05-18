@@ -2,13 +2,15 @@ package net.maple3142.craft2d;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import net.maple3142.craft2d.storage.PlayerInventory;
+import net.maple3142.craft2d.utils.Vector2;
 
 public class Player {
     private static Image steve = new Image(Player.class.getResource("/entity/steve_front.png").toString());
     private int entityWidth = 1;
     private int entityHeight = 2;
     public Vector2 position; // (x, y) represents left bottom of the entity
-    public Inventory inventory = new Inventory();
+    public PlayerInventory inventory = new PlayerInventory();
     private Vector2 velocity = new Vector2();
     private Vector2 gravityAcceleration = new Vector2(0, -0.0001);
     private World world;

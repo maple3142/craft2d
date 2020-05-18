@@ -10,13 +10,20 @@ public class ItemStack {
         numItems = 1;
     }
 
-    public void addItems(int num) {
-        if (num <= 0) throw new IllegalArgumentException("num should be greater than 0");
+    public ItemStack(Item item, int num) {
+        this.item = item;
+        numItems = num;
+    }
+
+    public void setItemsNum(int num) {
+        numItems = num;
+    }
+
+    public void addItemsNum(int num) {
         numItems += num;
     }
 
-    public void removeItems(int num) {
-        if (num <= 0) throw new IllegalArgumentException("num should be greater than 0");
+    public void removeItemsNum(int num) {
         numItems -= num;
     }
 

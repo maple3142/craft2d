@@ -1,4 +1,4 @@
-package net.maple3142.craft2d;
+package net.maple3142.craft2d.utils;
 
 public class Vector2 {
     public double x;

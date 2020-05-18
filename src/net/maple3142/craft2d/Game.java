@@ -70,7 +70,9 @@ public class Game {
         this.root.getChildren().addAll(gameLayer, uiBgLayer, uiLayer);
         root.setOnKeyPressed(this::onKeyPressed);
         root.setOnKeyReleased(this::onKeyReleased);
-        root.setOnMouseClicked(this::onMouseClicked);
+        root.setOnMousePressed(this::onMousePressed);
+        root.setOnMouseMoved(this::onMouseMoved);
+        root.setOnMouseReleased(this::onMouseReleased);
         root.setOnScroll(this::onScroll);
         this.scene = new Scene(root);
 
@@ -110,18 +112,16 @@ public class Game {
         lastTimeMs = (int) (System.nanoTime() / 1000000);
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new StoneBlock());
-        var stk = new ItemStack(new DirtBlock());
-        stk.addItems(7);
-        player.inventory.storage[1] = stk;
-        player.inventory.storage[8] = new ItemStack(new GrassBlock());
+        player.inventory.storage[0] = new ItemStack(new StoneBlock(), 8);
+        player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
+        player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
         player.inventory.storage[9] = new ItemStack(new StoneBlock());
         player.inventory.storage[17] = new ItemStack(new StoneBlock());
-        player.inventory.storage[17] = new ItemStack(new StoneBlock());
+        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
         player.inventory.storage[21] = new ItemStack(new StoneBlock());
-        player.inventory.storage[25] = new ItemStack(new GrassBlock());
+        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
         player.inventory.storage[28] = new ItemStack(new StoneBlock());
-        player.inventory.storage[35] = new ItemStack(new DirtBlock());
+        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
     }
 
     public Scene getScene() {
@@ -246,9 +246,23 @@ public class Game {
         }
     }
 
-    public void onMouseClicked(MouseEvent event) {
+    public void onMousePressed(MouseEvent event) {
         if (currentUi == null) {
             gameOnMouseClicked(event);
+        } else {
+            uiMousePressed(event);
+        }
+    }
+
+    public void onMouseMoved(MouseEvent event) {
+        if (currentUi != null) {
+            uiOnMouseMoved(event);
+        }
+    }
+
+    public void onMouseReleased(MouseEvent event) {
+        if (currentUi != null) {
+            uiOnMouseReleased(event);
         }
     }
 
@@ -262,6 +276,18 @@ public class Game {
         if (event.getCode() == KeyCode.E) {
             currentUi = null;
         }
+    }
+
+    public void uiMousePressed(MouseEvent event) {
+        currentUi.handleMousePress(event, widthProperty.get(), heightProperty.get());
+    }
+
+    public void uiOnMouseMoved(MouseEvent event) {
+        currentUi.handleMouseMove(event, widthProperty.get(), heightProperty.get());
+    }
+
+    public void uiOnMouseReleased(MouseEvent event) {
+        currentUi.handleMouseRelease(event, widthProperty.get(), heightProperty.get());
     }
 
     public void gameOnKeyPressed(KeyEvent event) {

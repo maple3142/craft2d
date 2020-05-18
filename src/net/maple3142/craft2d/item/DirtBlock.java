@@ -17,4 +17,9 @@ public class DirtBlock implements PlaceableItem {
     public Image getImage() {
         return block.getImage();
     }
+
+    @Override
+    public boolean equals(Item item) {
+        return item instanceof DirtBlock;
+    }
 }

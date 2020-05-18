@@ -4,6 +4,7 @@ import net.maple3142.craft2d.block.Block;
 import net.maple3142.craft2d.block.Dirt;
 import net.maple3142.craft2d.block.Grass;
 import net.maple3142.craft2d.block.Stone;
+import net.maple3142.craft2d.utils.PerlinNoise;
 
 public class World {
     public static int worldHeight = 64;
