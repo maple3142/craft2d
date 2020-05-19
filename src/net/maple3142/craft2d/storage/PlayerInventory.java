@@ -6,8 +6,10 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.item.ItemStack;
+import net.maple3142.craft2d.item.Tool;
 
 public class PlayerInventory implements UiOpenable {
     public static Image inventoryBarImg = new Image(PlayerInventory.class.getResource("/ui/inventory_bar.png").toString());
@@ -143,7 +145,7 @@ public class PlayerInventory implements UiOpenable {
     private static final double inventoryHeight = 332;
 
     @Override
-    public void drawUi(GraphicsContext ctx, double gameWidth, double gameHeight) {
+    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight) {
         double invX = (gameWidth - inventoryWidth) / 2;
         double invY = (gameHeight - inventoryHeight) / 2;
         ctx.drawImage(inventoryImg, invX, invY, inventoryWidth, inventoryHeight);
@@ -153,16 +155,18 @@ public class PlayerInventory implements UiOpenable {
         fillRowItems(ctx, invX + 12, invY + 236, 27);
 
         if (draggedStack != null) {
+            double mx = mouse.getX();
+            double my = mouse.getY();
             var item = draggedStack.getItem();
             double size = itemBarItemDefaultSize * 0.75;
             double dsz = itemBarItemDefaultSize;
-            ctx.drawImage(item.getImage(), mouseX - size / 2, mouseY - size / 2, size, size);
+            ctx.drawImage(item.getImage(), mx - size / 2, my - size / 2, size, size);
             ctx.setTextAlign(TextAlignment.RIGHT);
             ctx.setTextBaseline(VPos.BOTTOM);
             ctx.setFill(Color.WHITE);
             int num = draggedStack.getItemsNum();
             if (num > 1) {
-                ctx.fillText(String.valueOf(num), mouseX + dsz / 2, mouseY + dsz / 2);
+                ctx.fillText(String.valueOf(num), mx + dsz / 2, my + dsz / 2);
             }
         }
     }
@@ -192,7 +196,7 @@ public class PlayerInventory implements UiOpenable {
     private ItemStack draggedStack;
 
     @Override
-    public void handleMousePress(MouseEvent event, double gameWidth, double gameHeight) {
+    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight) {
         double invX = (gameWidth - inventoryWidth) / 2;
         double invY = (gameHeight - inventoryHeight) / 2;
         double x = event.getX() - invX;
@@ -205,25 +209,6 @@ public class PlayerInventory implements UiOpenable {
                 draggedStack = putOneItem(id, draggedStack);
             }
         }
-    }
-
-    private double mouseX;
-    private double mouseY;
-
-    @Override
-    public void handleMouseMove(MouseEvent event, double gameWidth, double gameHeight) {
-        mouseX = event.getX();
-        mouseY = event.getY();
-    }
-
-    @Override
-    public void handleMouseRelease(MouseEvent event, double gameWidth, double gameHeight) {
-        double invX = (gameWidth - inventoryWidth) / 2;
-        double invY = (gameHeight - inventoryHeight) / 2;
-        double x = event.getX() - invX;
-        double y = event.getY() - invY;
-        int id = calculateFromRelativePosition(x, y);
-
     }
 
     private int selected = 0;
@@ -244,5 +229,17 @@ public class PlayerInventory implements UiOpenable {
 
     public ItemStack getSelectedItemStack() {
         return storage[selected];
+    }
+
+    public void setSelectedItemStack(ItemStack stk) {
+        storage[selected] = stk;
+    }
+
+    public Tool getSelectedTool() {
+        var stk = storage[selected];
+        if (stk != null && stk.getItem() instanceof Tool) {
+            return (Tool) stk.getItem();
+        }
+        return null;
     }
 }

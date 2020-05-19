@@ -8,10 +8,19 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import net.maple3142.craft2d.item.*;
+import net.maple3142.craft2d.item.ItemStack;
+import net.maple3142.craft2d.item.PlaceableItem;
+import net.maple3142.craft2d.item.block.*;
+import net.maple3142.craft2d.item.ingredient.Stick;
+import net.maple3142.craft2d.item.tool.WoodPickaxe;
+import net.maple3142.craft2d.item.tool.WoodShovel;
+import net.maple3142.craft2d.item.tool.WoodSword;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,6 +56,8 @@ public class Game {
 
     private UiOpenable currentUi = null;
 
+    public MouseTracker mouseTracker = new MouseTracker();
+
     public Game() {
         this.mainCanvas = new Canvas();
         this.mainCtx = mainCanvas.getGraphicsContext2D();
@@ -68,12 +79,11 @@ public class Game {
         this.uiBgLayer = new Pane();
         this.uiLayer = new Pane();
         this.root.getChildren().addAll(gameLayer, uiBgLayer, uiLayer);
-        root.setOnKeyPressed(this::onKeyPressed);
-        root.setOnKeyReleased(this::onKeyReleased);
-        root.setOnMousePressed(this::onMousePressed);
-        root.setOnMouseMoved(this::onMouseMoved);
-        root.setOnMouseReleased(this::onMouseReleased);
-        root.setOnScroll(this::onScroll);
+        root.addEventHandler(KeyEvent.KEY_PRESSED, this::onKeyPressed);
+        root.addEventHandler(KeyEvent.KEY_RELEASED, this::onKeyReleased);
+        root.addEventHandler(ScrollEvent.SCROLL, this::onScroll);
+        root.addEventHandler(MouseEvent.MOUSE_PRESSED, this::onMousePressed);
+        mouseTracker.bind(root);
         this.scene = new Scene(root);
 
         gameLayer.getChildren().addAll(sunCanvas, mainCanvas, entityCanvas, invBarCanvas);
@@ -114,10 +124,10 @@ public class Game {
         // testing inventory
         player.inventory.storage[0] = new ItemStack(new StoneBlock(), 8);
         player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
-        player.inventory.storage[2] = new ItemStack(new WoodSword(), 3);
+        player.inventory.storage[2] = new ItemStack(new WoodSword());
         player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-        player.inventory.storage[4] = new ItemStack(new WoodSword(), 3);
-        player.inventory.storage[5] = new ItemStack(new WoodSword(), 3);
+        player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
+        player.inventory.storage[5] = new ItemStack(new WoodShovel());
         player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
         player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
         player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
@@ -165,6 +175,36 @@ public class Game {
         int dt = timeMs - lastTimeMs;
         lastTimeMs = timeMs;
 
+        {
+            if (timeMs >= endBreakingTime && endBreakingTime != 0) {
+                endBreaking(false);
+            }
+        }
+
+        {
+            int height = (int) heightProperty.get();
+            double x = mouseTracker.getX();
+            double y = mouseTracker.getY();
+            int bx = (int) (leftX + x / blockWidth);
+            int by = (int) (bottomY + (double) (height / blockHeight) - (y / blockHeight)); // don't change it to (height - y) / blockHeight
+            if (mouseTracker.isPrimaryPressed()) {
+                startBreaking(bx, by);
+            } else if (endBreakingTime != 0) {
+                endBreaking(true);
+            }
+            if (mouseTracker.isSecondaryPressed()) {
+                var stk = player.inventory.getSelectedItemStack();
+                if (stk != null && world.blocks[by][bx] == null) {
+                    var item = stk.getItem();
+                    if (item instanceof PlaceableItem) {
+                        world.blocks[by][bx] = ((PlaceableItem) item).getPlacedBlock();
+                    }
+                    if (stk.getItemsNum() == 1) player.inventory.setSelectedItemStack(null);
+                    else stk.removeItemsNum(1);
+                }
+            }
+        }
+
         // move player
         {
             if (currentUi == null) {
@@ -198,7 +238,7 @@ public class Game {
                 uiBgLayer.setBlendMode(BlendMode.DARKEN);
                 uiBgCtx.setFill(Color.rgb(64, 64, 64, 0.5));
                 uiBgCtx.fillRect(0, 0, width, height);
-                currentUi.drawUi(uiCtx, width, height);
+                currentUi.drawUi(uiCtx, mouseTracker, width, height);
             }
         }
 
@@ -234,6 +274,34 @@ public class Game {
         }
     }
 
+    private int endBreakingTime = 0;
+    private int currentBreakingX;
+    private int currentBreakingY;
+
+    private void startBreaking(int x, int y) {
+        if (x != currentBreakingX || y != currentBreakingY) {
+            var current = (int) (System.nanoTime() / 1000000);
+            currentBreakingX = x;
+            currentBreakingY = y;
+            var tool = player.inventory.getSelectedTool();
+            var time = BreakingTimeCalculator.calculate(tool, world.blocks[currentBreakingY][currentBreakingX]);
+            endBreakingTime = current + time;
+        }
+    }
+
+    private void endBreaking(boolean interrupted) {
+        if (!interrupted) {
+            var blk = world.blocks[currentBreakingY][currentBreakingX];
+            if (blk != null) {
+                world.blocks[currentBreakingY][currentBreakingX] = null;
+                var tool = player.inventory.getSelectedTool();
+                var drop = blk.getDroppedItem(tool);
+                System.out.println(drop);
+            }
+        }
+        endBreakingTime = 0;
+    }
+
     private Set<KeyCode> pressedKeys = new HashSet<>();
 
     public void onKeyReleased(KeyEvent event) {
@@ -243,88 +311,28 @@ public class Game {
     public void onKeyPressed(KeyEvent event) {
         pressedKeys.add(event.getCode());
 
-        if (currentUi == null) {
-            gameOnKeyPressed(event);
-        } else {
-            uiOnKeyPressed(event);
-        }
-    }
-
-    public void onMousePressed(MouseEvent event) {
-        if (currentUi == null) {
-            gameOnMouseClicked(event);
-        } else {
-            uiMousePressed(event);
-        }
-    }
-
-    public void onMouseMoved(MouseEvent event) {
-        if (currentUi != null) {
-            uiOnMouseMoved(event);
-        }
-    }
-
-    public void onMouseReleased(MouseEvent event) {
-        if (currentUi != null) {
-            uiOnMouseReleased(event);
+        if (event.getCode() == KeyCode.E) {
+            if (currentUi == null) {
+                currentUi = player.inventory;
+            } else {
+                currentUi = null;
+            }
         }
     }
 
     public void onScroll(ScrollEvent event) {
         if (currentUi == null) {
-            gameOnScroll(event);
-        }
-    }
-
-    public void uiOnKeyPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.E) {
-            currentUi = null;
-        }
-    }
-
-    public void uiMousePressed(MouseEvent event) {
-        currentUi.handleMousePress(event, widthProperty.get(), heightProperty.get());
-    }
-
-    public void uiOnMouseMoved(MouseEvent event) {
-        currentUi.handleMouseMove(event, widthProperty.get(), heightProperty.get());
-    }
-
-    public void uiOnMouseReleased(MouseEvent event) {
-        currentUi.handleMouseRelease(event, widthProperty.get(), heightProperty.get());
-    }
-
-    public void gameOnKeyPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.E) {
-            currentUi = player.inventory;
-        }
-    }
-
-    public void gameOnMouseClicked(MouseEvent event) {
-        int height = (int) heightProperty.get();
-        double x = event.getX();
-        double y = event.getY();
-        double bx = (leftX + x / blockWidth);
-        double by = bottomY + (double) (height / blockHeight) - (y / blockHeight); // don't change it to (height - y) / blockHeight
-        if (event.getButton() == MouseButton.PRIMARY) {
-            world.blocks[(int) by][(int) bx] = null;
-        } else if (event.getButton() == MouseButton.SECONDARY) {
-            // TODO: placing block requires a total rework, such as not placing block on player and placing range
-            var stk = player.inventory.getSelectedItemStack();
-            if (stk != null) {
-                var item = stk.getItem();
-                if (item instanceof PlaceableItem) {
-                    world.blocks[(int) by][(int) bx] = ((PlaceableItem) item).getPlacedBlock();
-                }
+            if (event.getDeltaY() > 0) {
+                player.inventory.moveSelectionToLeft();
+            } else {
+                player.inventory.moveSelectionToRight();
             }
         }
     }
 
-    public void gameOnScroll(ScrollEvent event) {
-        if (event.getDeltaY() > 0) {
-            player.inventory.moveSelectionToLeft();
-        } else {
-            player.inventory.moveSelectionToRight();
+    public void onMousePressed(MouseEvent event) {
+        if (currentUi != null) {
+            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get());
         }
     }
 

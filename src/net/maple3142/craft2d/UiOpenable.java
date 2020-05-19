@@ -4,11 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 
 public interface UiOpenable {
-    void drawUi(GraphicsContext ctx, double gameWidth, double gameHeight);
+    void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight);
 
-    void handleMousePress(MouseEvent event, double gameWidth, double gameHeight);
-
-    void handleMouseMove(MouseEvent event, double gameWidth, double gameHeight);
-
-    void handleMouseRelease(MouseEvent event, double gameWidth, double gameHeight);
+    void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight);
 }
