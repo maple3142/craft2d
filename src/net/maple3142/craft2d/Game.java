@@ -114,9 +114,13 @@ public class Game {
         // testing inventory
         player.inventory.storage[0] = new ItemStack(new StoneBlock(), 8);
         player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
+        player.inventory.storage[2] = new ItemStack(new WoodSword(), 3);
+        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+        player.inventory.storage[4] = new ItemStack(new WoodSword(), 3);
+        player.inventory.storage[5] = new ItemStack(new WoodSword(), 3);
         player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
-        player.inventory.storage[9] = new ItemStack(new StoneBlock());
-        player.inventory.storage[17] = new ItemStack(new StoneBlock());
+        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
+        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
         player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
         player.inventory.storage[21] = new ItemStack(new StoneBlock());
         player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
@@ -305,6 +309,7 @@ public class Game {
         if (event.getButton() == MouseButton.PRIMARY) {
             world.blocks[(int) by][(int) bx] = null;
         } else if (event.getButton() == MouseButton.SECONDARY) {
+            // TODO: placing block requires a total rework, such as not placing block on player and placing range
             var stk = player.inventory.getSelectedItemStack();
             if (stk != null) {
                 var item = stk.getItem();

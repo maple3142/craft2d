@@ -32,6 +32,11 @@ public class PlayerInventory implements UiOpenable {
             storage[id] = stk;
             return null;
         }
+        if (!storage[id].isStackable() || !stk.isStackable()) {
+            var tmp = storage[id];
+            storage[id] = stk;
+            return tmp;
+        }
         if (storage[id].getItem().equals(stk.getItem())) {
             int s1 = storage[id].getItemsNum();
             int s2 = stk.getItemsNum();
@@ -63,6 +68,11 @@ public class PlayerInventory implements UiOpenable {
                 stk.removeItemsNum(1);
                 return stk;
             }
+        }
+        if (!storage[id].isStackable() || !stk.isStackable()) {
+            var tmp = storage[id];
+            storage[id] = stk;
+            return tmp;
         }
         if (storage[id].getItem().equals(stk.getItem())) {
             int s1 = storage[id].getItemsNum();
@@ -154,7 +164,6 @@ public class PlayerInventory implements UiOpenable {
             if (num > 1) {
                 ctx.fillText(String.valueOf(num), mouseX + dsz / 2, mouseY + dsz / 2);
             }
-
         }
     }
 

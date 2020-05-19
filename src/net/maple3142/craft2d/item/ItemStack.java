@@ -28,10 +28,18 @@ public class ItemStack {
     }
 
     public int getItemsNum() {
+        if (!(item instanceof Stackable)) {
+            return 1;
+        }
         return numItems;
     }
 
     public Item getItem() {
         return item;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isStackable() {
+        return item instanceof Stackable;
     }
 }

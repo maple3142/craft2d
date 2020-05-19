@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import net.maple3142.craft2d.block.Block;
 import net.maple3142.craft2d.block.Stone;
 
-public class StoneBlock implements PlaceableItem {
+public class StoneBlock implements PlaceableItem, Stackable {
 
     private Block block = new Stone();
 
