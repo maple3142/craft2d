@@ -5,6 +5,14 @@ import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.Stackable;
 
 public class Stick implements Item, Stackable {
+
+    public static final int id = 6;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
     private Image img = new Image(Stick.class.getResource("/item/stick.png").toString());
 
     @Override

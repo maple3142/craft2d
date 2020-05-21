@@ -6,4 +6,6 @@ public interface Item {
     Image getImage();
 
     boolean equals(Item item);
+
+    int getId();
 }
