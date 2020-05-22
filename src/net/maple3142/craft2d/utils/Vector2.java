@@ -14,6 +14,10 @@ public class Vector2 {
         this.y = y;
     }
 
+    public static Vector2 multiply(Vector2 vec, double k) {
+        return new Vector2(vec.x * k, vec.y * k);
+    }
+
     public boolean isZero() {
         return x == 0 && y == 0;
     }
@@ -26,10 +30,6 @@ public class Vector2 {
     public void multiply(double k) {
         x *= k;
         y *= k;
-    }
-
-    public static Vector2 multiply(Vector2 vec, double k) {
-        return new Vector2(vec.x * k, vec.y * k);
     }
 
     public String toString() {

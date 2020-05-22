@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/jfx_2d_game_test.iml" filepath="$PROJECT_DIR$/jfx_2d_game_test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/craft2d.iml" filepath="$PROJECT_DIR$/craft2d.iml" />
     </modules>
   </component>
 </project>

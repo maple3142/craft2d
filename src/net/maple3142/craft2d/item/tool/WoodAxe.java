@@ -11,13 +11,12 @@ import net.maple3142.craft2d.item.Tool;
 public class WoodAxe implements Item, Breakable, Tool {
 
     public static final int id = 7;
+    private Image img = new Image(WoodAxe.class.getResource("/item/wood_axe.png").toString());
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Image img = new Image(WoodAxe.class.getResource("/item/wood_axe.png").toString());
 
     @Override
     public Image getImage() {

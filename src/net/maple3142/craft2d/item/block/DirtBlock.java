@@ -10,13 +10,12 @@ import net.maple3142.craft2d.item.Stackable;
 public class DirtBlock implements PlaceableItem, Stackable {
 
     public static final int id = 1;
+    private Block block = new Dirt();
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Block block = new Dirt();
 
     @Override
     public Block getPlacedBlock() {

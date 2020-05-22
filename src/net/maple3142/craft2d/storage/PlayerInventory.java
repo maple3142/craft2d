@@ -12,16 +12,19 @@ import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 
 public class PlayerInventory implements UiOpenable {
-    public static Image inventoryBarImg = new Image(PlayerInventory.class.getResource("/ui/inventory_bar.png").toString());
-    public static Image inventoryImg = new Image(PlayerInventory.class.getResource("/ui/inventory.png").toString());
     private static final double width = 328;
     private static final double height = 40;
     private static final int bottomPadding = 10;
     private static final int itemBarBorderWidth = 4;
     private static final int itemBarItemDefaultSize = ((int) width - 10 * itemBarBorderWidth) / 9;
     private static final StorageLayout layout = new PlayerInventoryStorageLayout();
-
+    private static final double inventoryWidth = 352;
+    private static final double inventoryHeight = 332;
+    public static Image inventoryBarImg = new Image(PlayerInventory.class.getResource("/ui/inventory_bar.png").toString());
+    public static Image inventoryImg = new Image(PlayerInventory.class.getResource("/ui/inventory.png").toString());
     public ItemStack[] storage = new ItemStack[104]; // same layout as Minecraft survival inventory
+    private ItemStack draggedStack;
+    private int selected = 0;
 
     public ItemStack putAllItems(int id, ItemStack stk) { // minecraft's left click
         // returns remaining stack
@@ -141,9 +144,6 @@ public class PlayerInventory implements UiOpenable {
         }
     }
 
-    private static final double inventoryWidth = 352;
-    private static final double inventoryHeight = 332;
-
     @Override
     public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight) {
         double invX = (gameWidth - inventoryWidth) / 2;
@@ -193,8 +193,6 @@ public class PlayerInventory implements UiOpenable {
         return layout.getId(row, col);
     }
 
-    private ItemStack draggedStack;
-
     @Override
     public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight) {
         double invX = (gameWidth - inventoryWidth) / 2;
@@ -210,8 +208,6 @@ public class PlayerInventory implements UiOpenable {
             }
         }
     }
-
-    private int selected = 0;
 
     public void moveSelectionToRight() {
         selected++;

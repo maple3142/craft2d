@@ -10,13 +10,12 @@ import net.maple3142.craft2d.item.Stackable;
 public class StoneBlock implements PlaceableItem, Stackable {
 
     public static final int id = 3;
+    private Block block = new Stone();
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Block block = new Stone();
 
     @Override
     public Block getPlacedBlock() {

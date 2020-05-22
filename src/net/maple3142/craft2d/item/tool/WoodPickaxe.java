@@ -10,13 +10,12 @@ import net.maple3142.craft2d.item.Tool;
 public class WoodPickaxe implements Item, Breakable, Tool {
 
     public static final int id = 7;
+    private Image img = new Image(WoodPickaxe.class.getResource("/item/wood_pickaxe.png").toString());
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Image img = new Image(WoodPickaxe.class.getResource("/item/wood_pickaxe.png").toString());
 
     @Override
     public Image getImage() {

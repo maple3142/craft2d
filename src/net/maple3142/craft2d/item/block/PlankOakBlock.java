@@ -10,13 +10,12 @@ import net.maple3142.craft2d.item.Stackable;
 public class PlankOakBlock implements PlaceableItem, Stackable {
 
     public static final int id = 5;
+    private Block block = new PlankOak();
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Block block = new PlankOak();
 
     @Override
     public Block getPlacedBlock() {

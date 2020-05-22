@@ -15,10 +15,6 @@ public class ItemStack {
         numItems = num;
     }
 
-    public void setItemsNum(int num) {
-        numItems = num;
-    }
-
     public void addItemsNum(int num) {
         numItems += num;
     }
@@ -32,6 +28,10 @@ public class ItemStack {
             return 1;
         }
         return numItems;
+    }
+
+    public void setItemsNum(int num) {
+        numItems = num;
     }
 
     public Item getItem() {

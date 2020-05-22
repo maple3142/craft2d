@@ -9,13 +9,12 @@ import net.maple3142.craft2d.item.Tool;
 public class WoodSword implements Item, Breakable, Tool {
 
     public static final int id = 9;
+    private Image img = new Image(WoodSword.class.getResource("/item/wood_sword.png").toString());
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Image img = new Image(WoodSword.class.getResource("/item/wood_sword.png").toString());
 
     @Override
     public Image getImage() {

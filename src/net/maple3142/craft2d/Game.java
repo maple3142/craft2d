@@ -28,6 +28,7 @@ import java.util.Set;
 public class Game {
     public final static int blockWidth = 32;
     public final static int blockHeight = 32;
+    public MouseTracker mouseTracker = new MouseTracker();
     private DoubleProperty widthProperty = new SimpleDoubleProperty();
     private DoubleProperty heightProperty = new SimpleDoubleProperty();
     private Scene scene;
@@ -47,16 +48,17 @@ public class Game {
     private GraphicsContext uiBgCtx;
     private Canvas uiCanvas;
     private GraphicsContext uiCtx;
-
     private World world = World.generateRandom(78456);
     private Player player = new Player(world, world.spawnX, world.spawnY);
-
     private double leftX = world.spawnX - 10;
     private double bottomY = World.worldHeight;
-
     private UiOpenable currentUi = null;
-
-    public MouseTracker mouseTracker = new MouseTracker();
+    private int lastTimeMs;
+    private Image sun = new Image(getClass().getResource("/background/sun.png").toString());
+    private int endBreakingTime = 0;
+    private int currentBreakingX;
+    private int currentBreakingY;
+    private Set<KeyCode> pressedKeys = new HashSet<>();
 
     public Game() {
         this.mainCanvas = new Canvas();
@@ -108,8 +110,6 @@ public class Game {
         uiCanvas.widthProperty().bind(scene.widthProperty());
     }
 
-    private int lastTimeMs;
-
     public void start() {
         var timer = new AnimationTimer() {
             @Override
@@ -141,8 +141,6 @@ public class Game {
     public Scene getScene() {
         return scene;
     }
-
-    private Image sun = new Image(getClass().getResource("/background/sun.png").toString());
 
     private boolean moveCameraAccordingToPlayer(int width, int height) {
         // returns true if camera is moved
@@ -274,10 +272,6 @@ public class Game {
         }
     }
 
-    private int endBreakingTime = 0;
-    private int currentBreakingX;
-    private int currentBreakingY;
-
     private void startBreaking(int x, int y) {
         if (x != currentBreakingX || y != currentBreakingY) {
             var current = (int) (System.nanoTime() / 1000000);
@@ -301,8 +295,6 @@ public class Game {
         }
         endBreakingTime = 0;
     }
-
-    private Set<KeyCode> pressedKeys = new HashSet<>();
 
     public void onKeyReleased(KeyEvent event) {
         pressedKeys.remove(event.getCode());

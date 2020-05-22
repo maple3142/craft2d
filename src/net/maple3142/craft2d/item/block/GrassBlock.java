@@ -10,13 +10,12 @@ import net.maple3142.craft2d.item.Stackable;
 public class GrassBlock implements PlaceableItem, Stackable {
 
     public static final int id = 2;
+    private Block block = new Grass();
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Block block = new Grass();
 
     @Override
     public Block getPlacedBlock() {

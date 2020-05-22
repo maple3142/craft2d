@@ -11,13 +11,12 @@ import net.maple3142.craft2d.item.Tool;
 public class WoodShovel implements Item, Breakable, Tool {
 
     public static final int id = 8;
+    private Image img = new Image(WoodShovel.class.getResource("/item/wood_shovel.png").toString());
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Image img = new Image(WoodShovel.class.getResource("/item/wood_shovel.png").toString());
 
     @Override
     public Image getImage() {

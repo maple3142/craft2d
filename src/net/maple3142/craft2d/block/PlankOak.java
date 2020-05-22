@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
-import net.maple3142.craft2d.item.block.DirtBlock;
 import net.maple3142.craft2d.item.block.PlankOakBlock;
 
 public class PlankOak implements Block {

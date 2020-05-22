@@ -10,13 +10,12 @@ import net.maple3142.craft2d.item.Stackable;
 public class LogOakBlock implements PlaceableItem, Stackable {
 
     public static final int id = 4;
+    private Block block = new LogOak();
 
     @Override
     public int getId() {
         return id;
     }
-
-    private Block block = new LogOak();
 
     @Override
     public Block getPlacedBlock() {
