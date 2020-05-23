@@ -1,4 +1,4 @@
-package net.maple3142.craft2d.storage;
+package net.maple3142.craft2d.ui.storage;
 
 public class PlayerInventoryStorageLayout implements StorageLayout {
 

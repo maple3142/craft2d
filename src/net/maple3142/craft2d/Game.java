@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import net.maple3142.craft2d.block.Interactable;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
 import net.maple3142.craft2d.item.block.*;
@@ -128,6 +129,7 @@ public class Game {
         player.inventory.storage[3] = new ItemStack(new Stick(), 64);
         player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
         player.inventory.storage[5] = new ItemStack(new WoodShovel());
+        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
         player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
         player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
         player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
@@ -196,9 +198,12 @@ public class Game {
                     var item = stk.getItem();
                     if (item instanceof PlaceableItem) {
                         world.blocks[by][bx] = ((PlaceableItem) item).getPlacedBlock();
+                        if (stk.getItemsNum() == 1) player.inventory.setSelectedItemStack(null);
+                        else stk.removeItemsNum(1);
                     }
-                    if (stk.getItemsNum() == 1) player.inventory.setSelectedItemStack(null);
-                    else stk.removeItemsNum(1);
+                } else if (world.blocks[by][bx] instanceof Interactable) {
+                    var blk = (Interactable) (world.blocks[by][bx]);
+                    blk.onInteracted(this);
                 }
             }
         }
@@ -305,8 +310,9 @@ public class Game {
 
         if (event.getCode() == KeyCode.E) {
             if (currentUi == null) {
-                currentUi = player.inventory;
+                openUi(player.inventory);
             } else {
+                currentUi.onClosed();
                 currentUi = null;
             }
         }
@@ -328,4 +334,8 @@ public class Game {
         }
     }
 
+    public void openUi(UiOpenable ui) {
+        currentUi = ui;
+        currentUi.onOpened();
+    }
 }

@@ -9,6 +9,14 @@ import java.util.List;
 
 public class ReflectionHelper {
 
+    public static <T> T constructFromEmptyConstructor(Class<T> clz) {
+        try {
+            return clz.getDeclaredConstructor().newInstance();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     // copied from https://stackoverflow.com/a/520344
 
     @SuppressWarnings(value = {"rawtypes"})

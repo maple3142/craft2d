@@ -38,10 +38,10 @@ public class RecipeRegistry {
         recipes.add(recipe);
     }
 
-    public Class<? extends Item> findCraftedItem(CraftingInput input) {
+    public Recipe<? extends Item> findMatchedRecipe(CraftingInput input) {
         for (var recipe : recipes) {
             if (recipe.matchInput(input)) {
-                return recipe.getResultClass();
+                return recipe;
             }
         }
         return null;

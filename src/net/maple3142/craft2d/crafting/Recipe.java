@@ -6,4 +6,6 @@ public interface Recipe<T extends Item> {
     boolean matchInput(CraftingInput input);
 
     Class<T> getResultClass();
+
+    int getResultNum();
 }

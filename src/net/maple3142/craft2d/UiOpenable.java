@@ -4,6 +4,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 
 public interface UiOpenable {
+    void onOpened();
+
+    void onClosed();
+
     void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight);
 
     void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight);

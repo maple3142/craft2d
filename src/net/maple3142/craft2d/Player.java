@@ -2,7 +2,7 @@ package net.maple3142.craft2d;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import net.maple3142.craft2d.storage.PlayerInventory;
+import net.maple3142.craft2d.ui.storage.PlayerInventory;
 import net.maple3142.craft2d.utils.Vector2;
 
 public class Player {

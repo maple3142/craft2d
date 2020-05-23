@@ -11,7 +11,8 @@ public class Stick implements Item, Stackable {
 
     public static final int id = 6;
 
-    public static final Recipe<Stick> recipe = new SimpleRecipe<>(Stick.class, 1, 2, PlankOakBlock.id, PlankOakBlock.id);
+    public static final Recipe<Stick> recipe = new SimpleRecipe<>(Stick.class, 4, 1, 2, PlankOakBlock.id, PlankOakBlock.id);
+
     private Image img = new Image(Stick.class.getResource("/item/stick.png").toString());
 
     @Override

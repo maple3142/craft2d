@@ -8,14 +8,16 @@ public class SimpleRecipe<T extends Item> implements Recipe<T> {
     private int height;
     private int[] ids;
     private Class<T> clz;
+    private int num;
 
-    public SimpleRecipe(Class<T> clz, int width, int height, int... ids) {
+    public SimpleRecipe(Class<T> clz, int num, int width, int height, int... ids) {
         // a simple recipe helper to match id only
         if (width <= 0 || width > 3 || height <= 0 || height > 3)
             throw new IllegalArgumentException("Invalid width or height");
         if (ids.length != width * height) throw new IllegalArgumentException("ids length must me width*height");
 
         this.clz = clz;
+        this.num = num;
         this.width = width;
         this.height = height;
         this.ids = ids;
@@ -23,10 +25,18 @@ public class SimpleRecipe<T extends Item> implements Recipe<T> {
 
     private boolean matchSubBlock(CraftingInput input, int hs, int vs) {
         int i = 0;
-        for (int c = hs; c < hs + width; c++) {
-            for (int r = vs; r < vs + height; r++) {
-                if (input.getItemId(r, c) != ids[i]) {
-                    return false;
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                boolean isInSubBlock = hs <= c && c < hs + width && vs <= r && r < vs + height;
+                if (isInSubBlock) {
+                    if (input.getItemId(r, c) != ids[i]) {
+                        return false;
+                    }
+                    i++;
+                } else {
+                    if (input.getItemId(r, c) != 0) {
+                        return false;
+                    }
                 }
             }
         }
@@ -48,5 +58,10 @@ public class SimpleRecipe<T extends Item> implements Recipe<T> {
     @Override
     public Class<T> getResultClass() {
         return clz;
+    }
+
+    @Override
+    public int getResultNum() {
+        return num;
     }
 }
