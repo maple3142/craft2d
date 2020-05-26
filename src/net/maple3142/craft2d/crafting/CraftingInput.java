@@ -26,6 +26,7 @@ public class CraftingInput {
 
     public boolean contains(Item it) {
         for (var item : items) {
+            if (item == null) continue;
             if (item.equals(it)) {
                 return true;
             }
@@ -33,7 +34,27 @@ public class CraftingInput {
         return false;
     }
 
+    public boolean contains(int id) {
+        if (id == 0) throw new IllegalArgumentException("id can't be 0 here");
+        for (var item : items) {
+            if (item == null) continue;
+            if (item.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean containsAll(Item... args) {
+        for (var it : args) {
+            if (!contains(it)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean containsAll(int... args) {
         for (var it : args) {
             if (!contains(it)) {
                 return false;

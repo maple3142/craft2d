@@ -4,13 +4,23 @@ import javafx.scene.image.Image;
 import net.maple3142.craft2d.block.Block;
 import net.maple3142.craft2d.block.Dirt;
 import net.maple3142.craft2d.block.Grass;
+import net.maple3142.craft2d.crafting.Recipe;
+import net.maple3142.craft2d.crafting.SimpleRecipe;
 import net.maple3142.craft2d.item.Breakable;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.Tool;
+import net.maple3142.craft2d.item.block.PlankOakBlock;
+import net.maple3142.craft2d.item.ingredient.Stick;
 
 public class WoodShovel implements Item, Breakable, Tool {
 
     public static final int id = 8;
+
+    public static final Recipe<WoodShovel> recipe = new SimpleRecipe<>(WoodShovel.class, 1, 1, 3,
+            PlankOakBlock.id,
+            Stick.id,
+            Stick.id);
+
     private Image img = new Image(WoodShovel.class.getResource("/item/wood_shovel.png").toString());
 
     @Override
