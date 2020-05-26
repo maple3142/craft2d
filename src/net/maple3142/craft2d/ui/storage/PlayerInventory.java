@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.Player;
 import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
@@ -75,17 +76,17 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     }
 
     @Override
-    public void onOpened() {
+    public void onOpened(Player player) {
 
     }
 
     @Override
-    public void onClosed() {
+    public void onClosed(Player player) {
 
     }
 
     @Override
-    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight) {
+    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Player player) {
         double invX = (gameWidth - inventoryWidth) / 2;
         double invY = (gameHeight - inventoryHeight) / 2;
         ctx.drawImage(inventoryImg, invX, invY, inventoryWidth, inventoryHeight);
@@ -98,7 +99,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
         drawDraggedStack(ctx, mouse, itemBarItemDefaultSize);
     }
 
-    protected int calculateIdFromRelativePosition(double x, double y) {
+    public int calculateIdFromRelativePosition(double x, double y) {
         int row = -1, col = -1;
 
         if (166 <= y && y <= 270 && 14 <= x && x <= 334) {
@@ -113,10 +114,10 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     }
 
     @Override
-    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight) {
+    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Player player) {
         double invX = (gameWidth - inventoryWidth) / 2;
         double invY = (gameHeight - inventoryHeight) / 2;
-        handleMousePressedRelativeCoordinates(event, event.getX() - invX, event.getY() - invY);
+        handleMousePressedRelativeCoordinates(event, event.getX() - invX, event.getY() - invY, player);
     }
 
     public void moveSelectionToRight() {

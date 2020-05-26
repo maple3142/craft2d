@@ -7,13 +7,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.Player;
 import net.maple3142.craft2d.ReflectionHelper;
 import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.crafting.CraftingInput;
 import net.maple3142.craft2d.crafting.RecipeRegistry;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.ItemStack;
-import net.maple3142.craft2d.item.block.PlankOakBlock;
 import net.maple3142.craft2d.ui.BlockUi;
 import net.maple3142.craft2d.ui.storage.PlayerInventory;
 
@@ -28,16 +28,11 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     }
 
     @Override
-    public void onOpened() {
-        storage[0] = new ItemStack(new PlankOakBlock(), 64);
-//        storage[1] = new ItemStack(new PlankOakBlock());
-//        storage[2] = new ItemStack(new PlankOakBlock());
-//        storage[4] = new ItemStack(new Stick());
-//        storage[7] = new ItemStack(new Stick());
+    public void onOpened(Player player) {
     }
 
     @Override
-    public void onClosed() {
+    public void onClosed(Player player) {
         storage = new ItemStack[9];
     }
 
@@ -45,7 +40,7 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     private static final int itemDefaultSize = 32;
 
     @Override
-    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight) {
+    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Player player) {
         double ctX = (gameWidth - width) / 2;
         double ctY = (gameHeight - height) / 2;
         ctx.drawImage(img, ctX, ctY, width, height);
@@ -80,15 +75,42 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
             }
         }
 
+
+        {
+            fillRowItems(player.inventory.storage, ctx, ctX + 12, ctY + 280, 0); // the last row
+            fillRowItems(player.inventory.storage, ctx, ctX + 12, ctY + 164, 9);
+            fillRowItems(player.inventory.storage, ctx, ctX + 12, ctY + 200, 18);
+            fillRowItems(player.inventory.storage, ctx, ctX + 12, ctY + 236, 27);
+        }
+
         drawDraggedStack(ctx, mouse, itemDefaultSize);
+    }
+
+    private void fillRowItems(ItemStack[] storage, GraphicsContext ctx, double x, double y, int idOffset) {
+        double startX = x + itemBorderWidth;
+        for (int i = 0; i <= 8; i++) {
+            int id = i + idOffset;
+            if (storage[id] != null) {
+                var item = storage[id].getItem();
+                drawImagePercentageCenter(ctx, item.getImage(), startX, y + itemBorderWidth, itemDefaultSize, itemDefaultSize, 0.75);
+                int num = storage[id].getItemsNum();
+                if (num > 1) {
+                    ctx.setTextAlign(TextAlignment.RIGHT);
+                    ctx.setTextBaseline(VPos.BOTTOM);
+                    ctx.setFill(Color.WHITE);
+                    ctx.fillText(String.valueOf(num), startX + itemDefaultSize, y + itemBorderWidth + itemDefaultSize);
+                }
+            }
+            startX += (itemDefaultSize + itemBorderWidth);
+        }
     }
 
 
     @Override
-    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight) {
+    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Player player) {
         double ctX = (gameWidth - width) / 2;
         double ctY = (gameHeight - height) / 2;
-        handleMousePressedRelativeCoordinates(event, event.getX() - ctX, event.getY() - ctY);
+        handleMousePressedRelativeCoordinates(event, event.getX() - ctX, event.getY() - ctY, player);
 
         var arr = new Item[9];
         for (int i = 0; i < 9; i++) {
@@ -104,40 +126,52 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
         }
     }
 
-    @Override
-    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y) {
-        int id = calculateIdFromRelativePosition(x, y);
-        if (id == 9) { // special handling for result block
-            if (storage[9] == null) return;
-            int maxItems = storage[9].isStackable() ? ItemStack.maxItems : 1;
-            if (draggedStack == null ||
-                    (storage[9].getItem().equals(draggedStack.getItem()) && storage[9].getItemsNum() + draggedStack.getItemsNum() <= maxItems)) {
-                if (event.isPrimaryButtonDown() || event.isSecondaryButtonDown()) {
-                    if (draggedStack == null) {
-                        draggedStack = storage[9];
-                    } else {
-                        draggedStack.addItemsNum(storage[9].getItemsNum());
-                    }
-                    storage[9] = null;
+    private void handleResultBlock(MouseEvent event) {
+        if (storage[9] == null) return;
+        int maxItems = storage[9].isStackable() ? ItemStack.maxItems : 1;
+        if (draggedStack == null ||
+                (storage[9].getItem().equals(draggedStack.getItem()) && storage[9].getItemsNum() + draggedStack.getItemsNum() <= maxItems)) {
+            if (event.isPrimaryButtonDown() || event.isSecondaryButtonDown()) {
+                if (draggedStack == null) {
+                    draggedStack = storage[9];
+                } else {
+                    draggedStack.addItemsNum(storage[9].getItemsNum());
+                }
+                storage[9] = null;
 
-                    // remove 1 items from crafting panel
-                    for (int i = 0; i < 9; i++) {
-                        if (storage[i] != null) {
-                            if (storage[i].getItemsNum() == 1) {
-                                storage[i] = null;
-                            } else {
-                                storage[i].removeItemsNum(1);
-                            }
+                // remove 1 items from crafting panel
+                for (int i = 0; i < 9; i++) {
+                    if (storage[i] != null) {
+                        if (storage[i].getItemsNum() == 1) {
+                            storage[i] = null;
+                        } else {
+                            storage[i].removeItemsNum(1);
                         }
                     }
                 }
             }
+        }
+    }
 
+    @Override
+    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Player player) {
+        int id = calculateIdFromRelativePosition(x, y);
+        if (id == 9) {
+            handleResultBlock(event); // special handling for result block
         } else if (id != -1) {
             if (event.isPrimaryButtonDown()) {
-                draggedStack = putAllItems(id, draggedStack);
+                draggedStack = putAllItems(storage, id, draggedStack);
             } else if (event.isSecondaryButtonDown()) {
-                draggedStack = putOneItem(id, draggedStack);
+                draggedStack = putOneItem(storage, id, draggedStack);
+            }
+        }
+
+        int invId = player.inventory.calculateIdFromRelativePosition(x, y); // because crafting table and inventory have same size
+        if (invId != -1) {
+            if (event.isPrimaryButtonDown()) {
+                draggedStack = putAllItems(player.inventory.storage, invId, draggedStack);
+            } else if (event.isSecondaryButtonDown()) {
+                draggedStack = putOneItem(player.inventory.storage, invId, draggedStack);
             }
         }
     }

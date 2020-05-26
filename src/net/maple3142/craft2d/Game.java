@@ -241,7 +241,7 @@ public class Game {
                 uiBgLayer.setBlendMode(BlendMode.DARKEN);
                 uiBgCtx.setFill(Color.rgb(64, 64, 64, 0.5));
                 uiBgCtx.fillRect(0, 0, width, height);
-                currentUi.drawUi(uiCtx, mouseTracker, width, height);
+                currentUi.drawUi(uiCtx, mouseTracker, width, height, player);
             }
         }
 
@@ -312,7 +312,7 @@ public class Game {
             if (currentUi == null) {
                 openUi(player.inventory);
             } else {
-                currentUi.onClosed();
+                currentUi.onClosed(player);
                 currentUi = null;
             }
         }
@@ -330,12 +330,12 @@ public class Game {
 
     public void onMousePressed(MouseEvent event) {
         if (currentUi != null) {
-            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get());
+            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get(),player);
         }
     }
 
     public void openUi(UiOpenable ui) {
         currentUi = ui;
-        currentUi.onOpened();
+        currentUi.onOpened(player);
     }
 }

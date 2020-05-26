@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.Player;
 import net.maple3142.craft2d.item.ItemStack;
 
 public abstract class BlockUi {
@@ -18,7 +19,7 @@ public abstract class BlockUi {
         storage = new ItemStack[storageSize];
     }
 
-    protected void drawDraggedStack(GraphicsContext ctx,MouseTracker mouse,double gridSize){
+    protected void drawDraggedStack(GraphicsContext ctx, MouseTracker mouse, double gridSize) {
         if (draggedStack != null) {
             double mx = mouse.getX();
             double my = mouse.getY();
@@ -43,7 +44,7 @@ public abstract class BlockUi {
         ctx.drawImage(image, x + pw, y + ph, rw, rh);
     }
 
-    protected ItemStack putAllItems(int id, ItemStack stk) { // minecraft's left click
+    protected ItemStack putAllItems(ItemStack[] storage, int id, ItemStack stk) { // minecraft's left click
         // returns remaining stack
         if (stk == null) {
             var tmp = storage[id];
@@ -76,7 +77,7 @@ public abstract class BlockUi {
         return tmp;
     }
 
-    protected ItemStack putOneItem(int id, ItemStack stk) { // minecraft's right click
+    protected ItemStack putOneItem(ItemStack[] storage, int id, ItemStack stk) { // minecraft's right click
         // returns remaining stack
         if (stk == null) {
             var tmp = storage[id];
@@ -116,13 +117,13 @@ public abstract class BlockUi {
         return tmp;
     }
 
-    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y) {
+    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Player player) {
         int id = calculateIdFromRelativePosition(x, y);
         if (id != -1) {
             if (event.isPrimaryButtonDown()) {
-                draggedStack = putAllItems(id, draggedStack);
+                draggedStack = putAllItems(storage, id, draggedStack);
             } else if (event.isSecondaryButtonDown()) {
-                draggedStack = putOneItem(id, draggedStack);
+                draggedStack = putOneItem(storage, id, draggedStack);
             }
         }
     }
