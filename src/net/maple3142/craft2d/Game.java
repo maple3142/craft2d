@@ -19,9 +19,11 @@ import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
 import net.maple3142.craft2d.item.block.*;
 import net.maple3142.craft2d.item.ingredient.Stick;
+import net.maple3142.craft2d.item.tool.WoodAxe;
 import net.maple3142.craft2d.item.tool.WoodPickaxe;
 import net.maple3142.craft2d.item.tool.WoodShovel;
 import net.maple3142.craft2d.item.tool.WoodSword;
+import net.maple3142.craft2d.ui.BlockBreaking;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,36 +32,40 @@ public class Game {
     public final static int blockWidth = 32;
     public final static int blockHeight = 32;
     public MouseTracker mouseTracker = new MouseTracker();
+
     private DoubleProperty widthProperty = new SimpleDoubleProperty();
     private DoubleProperty heightProperty = new SimpleDoubleProperty();
+
     private Scene scene;
     private Pane root;
     private Pane gameLayer;
     private Pane uiBgLayer;
     private Pane uiLayer;
+
     private Canvas mainCanvas;
     private GraphicsContext mainCtx;
     private Canvas entityCanvas;
     private GraphicsContext entityCtx;
     private Canvas sunCanvas;
     private GraphicsContext sunCtx;
-    private Canvas invBarCanvas;
-    private GraphicsContext invBarCtx;
+    private Canvas hudCanvas;
+    private GraphicsContext hudCtx;
     private Canvas uiBgCanvas;
     private GraphicsContext uiBgCtx;
     private Canvas uiCanvas;
     private GraphicsContext uiCtx;
-    private World world = World.generateRandom(78456);
-    private Player player = new Player(world, world.spawnX, world.spawnY);
+
+    public World world = World.generateRandom(78456);
+    public Player player = new Player(world, world.spawnX, world.spawnY);
+
     private double leftX = world.spawnX - 10;
     private double bottomY = World.worldHeight;
     private UiOpenable currentUi = null;
     private int lastTimeMs;
     private Image sun = new Image(getClass().getResource("/background/sun.png").toString());
-    private int endBreakingTime = 0;
-    private int currentBreakingX;
-    private int currentBreakingY;
     private Set<KeyCode> pressedKeys = new HashSet<>();
+
+    private BlockBreaking breakingProgress = new BlockBreaking(this);
 
     public Game() {
         this.mainCanvas = new Canvas();
@@ -68,8 +74,8 @@ public class Game {
         this.entityCtx = entityCanvas.getGraphicsContext2D();
         this.sunCanvas = new Canvas();
         this.sunCtx = sunCanvas.getGraphicsContext2D();
-        this.invBarCanvas = new Canvas();
-        this.invBarCtx = invBarCanvas.getGraphicsContext2D();
+        this.hudCanvas = new Canvas();
+        this.hudCtx = hudCanvas.getGraphicsContext2D();
 
         this.uiBgCanvas = new Canvas();
         this.uiBgCtx = uiBgCanvas.getGraphicsContext2D();
@@ -89,7 +95,7 @@ public class Game {
         mouseTracker.bind(root);
         this.scene = new Scene(root);
 
-        gameLayer.getChildren().addAll(sunCanvas, mainCanvas, entityCanvas, invBarCanvas);
+        gameLayer.getChildren().addAll(sunCanvas, mainCanvas, entityCanvas, hudCanvas);
         uiBgLayer.getChildren().addAll(uiBgCanvas);
         uiLayer.getChildren().addAll(uiCanvas);
 
@@ -101,8 +107,8 @@ public class Game {
         entityCanvas.widthProperty().bind(scene.widthProperty());
         sunCanvas.heightProperty().bind(scene.heightProperty());
         sunCanvas.widthProperty().bind(scene.widthProperty());
-        invBarCanvas.heightProperty().bind(scene.heightProperty());
-        invBarCanvas.widthProperty().bind(scene.widthProperty());
+        hudCanvas.heightProperty().bind(scene.heightProperty());
+        hudCanvas.widthProperty().bind(scene.widthProperty());
 
         uiBgCanvas.heightProperty().bind(scene.heightProperty());
         uiBgCanvas.widthProperty().bind(scene.widthProperty());
@@ -130,6 +136,7 @@ public class Game {
         player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
         player.inventory.storage[5] = new ItemStack(new WoodShovel());
         player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
+        player.inventory.storage[5] = new ItemStack(new WoodAxe());
         player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
         player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
         player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
@@ -176,8 +183,8 @@ public class Game {
         lastTimeMs = timeMs;
 
         {
-            if (timeMs >= endBreakingTime && endBreakingTime != 0) {
-                endBreaking(false);
+            if (breakingProgress.isBreaking && timeMs >= breakingProgress.endBreakingTime) {
+                breakingProgress.endBreaking(true);
             }
         }
 
@@ -188,9 +195,10 @@ public class Game {
             int bx = (int) (leftX + x / blockWidth);
             int by = (int) (bottomY + (double) (height / blockHeight) - (y / blockHeight)); // don't change it to (height - y) / blockHeight
             if (mouseTracker.isPrimaryPressed()) {
-                startBreaking(bx, by);
-            } else if (endBreakingTime != 0) {
-                endBreaking(true);
+                breakingProgress.tryStartBreaking(world, bx, by);
+
+            } else if (breakingProgress.isBreaking) { // if mouse isn't pressed while breaking, then it is interrupted
+                breakingProgress.endBreaking(false);
             }
             if (mouseTracker.isSecondaryPressed()) {
                 var stk = player.inventory.getSelectedItemStack();
@@ -229,9 +237,14 @@ public class Game {
         boolean isCameraMoved = moveCameraAccordingToPlayer(width, height);
 
         entityCtx.clearRect(0, 0, width, height);
-        invBarCtx.clearRect(0, 0, width, height);
+        hudCtx.clearRect(0, 0, width, height);
 
-        player.inventory.drawInventoryBar(invBarCtx, width, height);
+        if (breakingProgress.isBreaking) {
+            double percent = breakingProgress.getBreakingPercentage(timeMs);
+            breakingProgress.drawProgressBar(hudCtx, mouseTracker, percent);
+        }
+
+        player.inventory.drawInventoryBar(hudCtx, width, height);
 
         // ui rendering
         {
@@ -277,30 +290,6 @@ public class Game {
         }
     }
 
-    private void startBreaking(int x, int y) {
-        if (x != currentBreakingX || y != currentBreakingY) {
-            var current = (int) (System.nanoTime() / 1000000);
-            currentBreakingX = x;
-            currentBreakingY = y;
-            var tool = player.inventory.getSelectedTool();
-            var time = BreakingTimeCalculator.calculate(tool, world.blocks[currentBreakingY][currentBreakingX]);
-            endBreakingTime = current + time;
-        }
-    }
-
-    private void endBreaking(boolean interrupted) {
-        if (!interrupted) {
-            var blk = world.blocks[currentBreakingY][currentBreakingX];
-            if (blk != null) {
-                world.blocks[currentBreakingY][currentBreakingX] = null;
-                var tool = player.inventory.getSelectedTool();
-                var drop = blk.getDroppedItem(tool);
-                System.out.println(drop);
-            }
-        }
-        endBreakingTime = 0;
-    }
-
     public void onKeyReleased(KeyEvent event) {
         pressedKeys.remove(event.getCode());
     }
@@ -330,7 +319,7 @@ public class Game {
 
     public void onMousePressed(MouseEvent event) {
         if (currentUi != null) {
-            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get(),player);
+            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get(), player);
         }
     }
 
