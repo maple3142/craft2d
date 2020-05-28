@@ -5,7 +5,6 @@ import javafx.scene.paint.Color;
 import net.maple3142.craft2d.BreakingTimeCalculator;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
-import net.maple3142.craft2d.World;
 
 public class BlockBreaking {
 
@@ -28,12 +27,9 @@ public class BlockBreaking {
         ctx.setFill(Color.WHITE);
         ctx.fillRect(x, y, width, height);
 
-        ctx.setFill(Color.BLACK);
+        ctx.setStroke(Color.BLACK);
         ctx.setLineWidth(borderWidth);
-        ctx.beginPath();
-        ctx.rect(x, y, width, height);
-        ctx.stroke();
-        ctx.closePath();
+        ctx.strokeRect(x, y, width, height);
 
         ctx.setFill(Color.AQUA);
         ctx.fillRect(x + borderWidth, y + borderWidth, width * percent, height - 2 * borderWidth);
@@ -45,15 +41,7 @@ public class BlockBreaking {
     public int startBreakingTime = 0;
     public int endBreakingTime = 0;
 
-    public void tryStartBreaking(World world, int x, int y) {
-        if (isBreaking) {
-            if (x != currentBreakingX || y != currentBreakingY) {
-                endBreaking(false);
-            } else {
-                return;
-            }
-        }
-        if (world.blocks[y][x] == null) return;
+    public void startBreaking(int x, int y) {
         isBreaking = true;
         startBreakingTime = (int) (System.nanoTime() / 1000000);
         currentBreakingX = x;

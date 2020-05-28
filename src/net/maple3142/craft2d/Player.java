@@ -82,4 +82,12 @@ public class Player {
             velocity.y += 0.03;
         }
     }
+
+    public double getCenterX() {
+        return position.x + 0.5;
+    }
+
+    public double getCenterY() {
+        return position.y + 1;
+    }
 }

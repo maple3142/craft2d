@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import net.maple3142.craft2d.block.Interactable;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
@@ -31,6 +32,7 @@ import java.util.Set;
 public class Game {
     public final static int blockWidth = 32;
     public final static int blockHeight = 32;
+    public static final int mouseRange = 6;
     public MouseTracker mouseTracker = new MouseTracker();
 
     private DoubleProperty widthProperty = new SimpleDoubleProperty();
@@ -65,7 +67,7 @@ public class Game {
     private Image sun = new Image(getClass().getResource("/background/sun.png").toString());
     private Set<KeyCode> pressedKeys = new HashSet<>();
 
-    private BlockBreaking breakingProgress = new BlockBreaking(this);
+    private BlockBreaking blockBreaking = new BlockBreaking(this);
 
     public Game() {
         this.mainCanvas = new Canvas();
@@ -182,25 +184,42 @@ public class Game {
         int dt = timeMs - lastTimeMs;
         lastTimeMs = timeMs;
 
+        int width = (int) widthProperty.get();
+        int height = (int) heightProperty.get();
+        double topY = bottomY + (double) (height / blockHeight);
+        double rightX = leftX + (double) (width / blockWidth);
+
         {
-            if (breakingProgress.isBreaking && timeMs >= breakingProgress.endBreakingTime) {
-                breakingProgress.endBreaking(true);
+            if (blockBreaking.isBreaking && timeMs >= blockBreaking.endBreakingTime) {
+                blockBreaking.endBreaking(true);
             }
         }
 
         {
-            int height = (int) heightProperty.get();
             double x = mouseTracker.getX();
             double y = mouseTracker.getY();
             int bx = (int) (leftX + x / blockWidth);
             int by = (int) (bottomY + (double) (height / blockHeight) - (y / blockHeight)); // don't change it to (height - y) / blockHeight
-            if (mouseTracker.isPrimaryPressed()) {
-                breakingProgress.tryStartBreaking(world, bx, by);
 
-            } else if (breakingProgress.isBreaking) { // if mouse isn't pressed while breaking, then it is interrupted
-                breakingProgress.endBreaking(false);
+            double pX = (player.getCenterX() - leftX) * Game.blockWidth;
+            double pY = (topY - player.getCenterY()) * Game.blockHeight;
+            double dx = x - pX;
+            double dy = y - pY;
+            double dist = Math.sqrt(dx * dx + dy * dy);
+            boolean isInRange = dist <= mouseRange * blockWidth;
+
+            if (mouseTracker.isPrimaryPressed()) {
+                if (blockBreaking.isBreaking) {
+                    if ((bx != blockBreaking.currentBreakingX || by != blockBreaking.currentBreakingY) || !isInRange) {
+                        blockBreaking.endBreaking(false);
+                    }
+                } else if (isInRange && world.blocks[by][bx] != null) {
+                    blockBreaking.startBreaking(bx, by);
+                }
+            } else if (blockBreaking.isBreaking) { // if mouse isn't pressed while breaking, then it is interrupted
+                blockBreaking.endBreaking(false);
             }
-            if (mouseTracker.isSecondaryPressed()) {
+            if (mouseTracker.isSecondaryPressed() && isInRange) {
                 var stk = player.inventory.getSelectedItemStack();
                 if (stk != null && world.blocks[by][bx] == null) {
                     var item = stk.getItem();
@@ -214,6 +233,7 @@ public class Game {
                     blk.onInteracted(this);
                 }
             }
+
         }
 
         // move player
@@ -232,19 +252,32 @@ public class Game {
         }
         player.processMovement(dt);
 
-        int width = (int) widthProperty.get();
-        int height = (int) heightProperty.get();
         boolean isCameraMoved = moveCameraAccordingToPlayer(width, height);
 
         entityCtx.clearRect(0, 0, width, height);
-        hudCtx.clearRect(0, 0, width, height);
 
-        if (breakingProgress.isBreaking) {
-            double percent = breakingProgress.getBreakingPercentage(timeMs);
-            breakingProgress.drawProgressBar(hudCtx, mouseTracker, percent);
+        // hud rendering
+        {
+            hudCtx.clearRect(0, 0, width, height);
+
+            if ((mouseTracker.isPrimaryPressed() || mouseTracker.isSecondaryPressed()) && currentUi == null) {
+                // draw interactable circle
+                hudCtx.setLineWidth(3);
+                hudCtx.setStroke(Color.BLACK);
+                double r = mouseRange * blockWidth;
+                double pX = (player.getCenterX() - leftX) * Game.blockWidth;
+                double pY = (topY - player.getCenterY()) * Game.blockHeight;
+                hudCtx.strokeArc(pX - r, pY - r, 2 * r, 2 * r, 0, 360, ArcType.OPEN);
+            }
+
+            if (blockBreaking.isBreaking) {
+                double percent = blockBreaking.getBreakingPercentage(timeMs);
+                blockBreaking.drawProgressBar(hudCtx, mouseTracker, percent);
+            }
+
+            player.inventory.drawInventoryBar(hudCtx, width, height);
         }
 
-        player.inventory.drawInventoryBar(hudCtx, width, height);
 
         // ui rendering
         {
@@ -258,9 +291,6 @@ public class Game {
             }
         }
 
-
-        double topY = bottomY + (double) (height / blockHeight);
-        double rightX = leftX + (double) (width / blockWidth);
         player.draw(entityCtx, leftX, topY);
 
         {

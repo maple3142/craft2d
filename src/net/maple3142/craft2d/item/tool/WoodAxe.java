@@ -2,6 +2,7 @@ package net.maple3142.craft2d.item.tool;
 
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.block.Block;
+import net.maple3142.craft2d.block.CraftingTable;
 import net.maple3142.craft2d.block.LogOak;
 import net.maple3142.craft2d.block.PlankOak;
 import net.maple3142.craft2d.crafting.Recipe;
@@ -56,7 +57,7 @@ public class WoodAxe implements Item, Breakable, Tool {
     @Override
     public double getHardnessMultiplier(Block target) {
         var clz = target.getClass();
-        if (clz == LogOak.class || clz == PlankOak.class) {
+        if (clz == LogOak.class || clz == PlankOak.class || clz == CraftingTable.class) {
             return 0.5;
         }
         return 1;
