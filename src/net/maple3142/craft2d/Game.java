@@ -344,6 +344,10 @@ public class Game {
             } else {
                 player.inventory.moveSelectionToRight();
             }
+            if (blockBreaking.isBreaking) {
+                // switching tools while breaking results in interruption
+                blockBreaking.endBreaking(false);
+            }
         }
     }
 
