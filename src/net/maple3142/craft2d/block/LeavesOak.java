@@ -6,7 +6,7 @@ import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.item.block.LogOakBlock;
 
-public class LeavesOak implements Block {
+public class LeavesOak implements Block, Wooden {
     public static Image image = new Image(LeavesOak.class.getResource("/block/leaves_oak.png").toString());
 
     @Override
