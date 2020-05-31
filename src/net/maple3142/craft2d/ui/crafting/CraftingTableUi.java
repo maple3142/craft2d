@@ -125,26 +125,27 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
         }
     }
 
-    private void handleResultBlock(MouseEvent event) {
-        if (storage[9] == null) return;
-        int maxItems = storage[9].isStackable() ? ItemStack.maxItems : 1;
+    private void handleResultBlock(ItemStack[] craftingArea, MouseEvent event) {
+        int resultId = craftingArea.length - 1;
+        if (craftingArea[resultId] == null) return;
+        int maxItems = craftingArea[resultId].isStackable() ? ItemStack.maxItems : 1;
         if (draggedStack == null ||
-                (storage[9].getItem().equals(draggedStack.getItem()) && storage[9].getItemsNum() + draggedStack.getItemsNum() <= maxItems)) {
+                (craftingArea[resultId].getItem().equals(draggedStack.getItem()) && craftingArea[resultId].getItemsNum() + draggedStack.getItemsNum() <= maxItems)) {
             if (event.isPrimaryButtonDown() || event.isSecondaryButtonDown()) {
                 if (draggedStack == null) {
-                    draggedStack = storage[9];
+                    draggedStack = craftingArea[resultId];
                 } else {
-                    draggedStack.addItemsNum(storage[9].getItemsNum());
+                    draggedStack.addItemsNum(craftingArea[resultId].getItemsNum());
                 }
-                storage[9] = null;
+                craftingArea[resultId] = null;
 
                 // remove 1 items from crafting panel
-                for (int i = 0; i < 9; i++) {
-                    if (storage[i] != null) {
-                        if (storage[i].getItemsNum() == 1) {
-                            storage[i] = null;
+                for (int i = 0; i < craftingArea.length - 1; i++) {
+                    if (craftingArea[i] != null) {
+                        if (craftingArea[i].getItemsNum() == 1) {
+                            craftingArea[i] = null;
                         } else {
-                            storage[i].removeItemsNum(1);
+                            craftingArea[i].removeItemsNum(1);
                         }
                     }
                 }
@@ -156,7 +157,7 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Player player) {
         int id = calculateIdFromRelativePosition(x, y);
         if (id == 9) {
-            handleResultBlock(event); // special handling for result block
+            handleResultBlock(storage, event); // special handling for result block
         } else if (id != -1) {
             if (event.isPrimaryButtonDown()) {
                 draggedStack = putAllItems(storage, id, draggedStack);
