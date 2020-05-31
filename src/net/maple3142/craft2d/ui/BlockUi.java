@@ -15,6 +15,9 @@ public abstract class BlockUi {
     public ItemStack[] storage;
     protected ItemStack draggedStack;
 
+    protected BlockUi() {
+    }
+
     protected BlockUi(int storageSize) {
         storage = new ItemStack[storageSize];
     }

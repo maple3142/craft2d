@@ -131,7 +131,7 @@ public class Game {
         lastTimeMs = (int) (System.nanoTime() / 1000000);
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new StoneBlock(), 8);
+        player.inventory.storage[0] = new ItemStack(new ChestBlock());
         player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
         player.inventory.storage[2] = new ItemStack(new WoodSword());
         player.inventory.storage[3] = new ItemStack(new Stick(), 64);
