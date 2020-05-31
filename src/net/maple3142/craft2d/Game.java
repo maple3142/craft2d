@@ -34,40 +34,35 @@ public class Game {
     public final static int blockHeight = 32;
     public static final int mouseRange = 6;
     public MouseTracker mouseTracker = new MouseTracker();
-
-    private DoubleProperty widthProperty = new SimpleDoubleProperty();
-    private DoubleProperty heightProperty = new SimpleDoubleProperty();
-
-    private Scene scene;
-    private Pane root;
-    private Pane gameLayer;
-    private Pane uiBgLayer;
-    private Pane uiLayer;
-
-    private Canvas mainCanvas;
-    private GraphicsContext mainCtx;
-    private Canvas entityCanvas;
-    private GraphicsContext entityCtx;
-    private Canvas sunCanvas;
-    private GraphicsContext sunCtx;
-    private Canvas hudCanvas;
-    private GraphicsContext hudCtx;
-    private Canvas uiBgCanvas;
-    private GraphicsContext uiBgCtx;
-    private Canvas uiCanvas;
-    private GraphicsContext uiCtx;
-
     public World world = World.generateRandom(78456);
     public Player player = new Player(world, world.spawnX, world.spawnY);
-
+    private final DoubleProperty widthProperty = new SimpleDoubleProperty();
+    private final DoubleProperty heightProperty = new SimpleDoubleProperty();
+    private final Scene scene;
+    private final Pane root;
+    private final Pane gameLayer;
+    private final Pane uiBgLayer;
+    private final Pane uiLayer;
+    private final Canvas mainCanvas;
+    private final GraphicsContext mainCtx;
+    private final Canvas entityCanvas;
+    private final GraphicsContext entityCtx;
+    private final Canvas sunCanvas;
+    private final GraphicsContext sunCtx;
+    private final Canvas hudCanvas;
+    private final GraphicsContext hudCtx;
+    private final Canvas uiBgCanvas;
+    private final GraphicsContext uiBgCtx;
+    private final Canvas uiCanvas;
+    private final GraphicsContext uiCtx;
     private double leftX = world.spawnX - 10;
     private double bottomY = World.worldHeight;
     private UiOpenable currentUi = null;
     private int lastTimeMs;
-    private Image sun = new Image(getClass().getResource("/background/sun.png").toString());
-    private Set<KeyCode> pressedKeys = new HashSet<>();
+    private final Image sun = new Image(getClass().getResource("/background/sun.png").toString());
+    private final Set<KeyCode> pressedKeys = new HashSet<>();
 
-    private BlockBreaking blockBreaking = new BlockBreaking(this);
+    private final BlockBreaking blockBreaking = new BlockBreaking(this);
 
     public Game() {
         this.mainCanvas = new Canvas();

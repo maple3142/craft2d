@@ -11,7 +11,7 @@ public class StoneBlock implements PlaceableItem, Stackable {
 
     public static final int id = 3;
 
-    private Block block = new Stone();
+    private final Block block = new Stone();
 
     @Override
     public int getId() {

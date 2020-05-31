@@ -4,9 +4,9 @@ import net.maple3142.craft2d.item.Item;
 
 public class SimpleUnorderedRecipe<T extends Item> implements Recipe<T> {
 
-    private int[] ids;
-    private Class<T> clz;
-    private int num;
+    private final int[] ids;
+    private final Class<T> clz;
+    private final int num;
 
     public SimpleUnorderedRecipe(Class<T> clz, int num, int... ids) {
         if (ids.length <= 0 || ids.length >= 9) throw new IllegalArgumentException("Invalid number of items");

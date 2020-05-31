@@ -22,7 +22,7 @@ public class WoodAxe implements Item, Breakable, Tool {
             PlankOakBlock.id, Stick.id,
             0, Stick.id);
 
-    private Image img = new Image(WoodAxe.class.getResource("/item/wood_axe.png").toString());
+    private final Image img = new Image(WoodAxe.class.getResource("/item/wood_axe.png").toString());
 
     @Override
     public int getId() {

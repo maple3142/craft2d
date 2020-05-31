@@ -21,6 +21,8 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
 
     private static final double width = 352;
     private static final double height = 332;
+    private static final int itemBorderWidth = 4;
+    private static final int itemDefaultSize = 32;
     public static Image img = new Image(PlayerInventory.class.getResource("/ui/crafting_table.png").toString());
 
     public CraftingTableUi() {
@@ -35,9 +37,6 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     public void onClosed(Player player) {
         storage = new ItemStack[9];
     }
-
-    private static final int itemBorderWidth = 4;
-    private static final int itemDefaultSize = 32;
 
     @Override
     public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Player player) {

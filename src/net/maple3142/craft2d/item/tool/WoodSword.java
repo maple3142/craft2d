@@ -19,7 +19,7 @@ public class WoodSword implements Item, Breakable, Tool {
             PlankOakBlock.id,
             Stick.id);
 
-    private Image img = new Image(WoodSword.class.getResource("/item/wood_sword.png").toString());
+    private final Image img = new Image(WoodSword.class.getResource("/item/wood_sword.png").toString());
 
     @Override
     public int getId() {

@@ -15,7 +15,7 @@ public class PlankOakBlock implements PlaceableItem, Stackable {
 
     public static final Recipe<PlankOakBlock> recipe = new SimpleUnorderedRecipe<>(PlankOakBlock.class, 4, LogOakBlock.id);
 
-    private Block block = new PlankOak();
+    private final Block block = new PlankOak();
 
     @Override
     public int getId() {

@@ -21,7 +21,7 @@ public class WoodShovel implements Item, Breakable, Tool {
             Stick.id,
             Stick.id);
 
-    private Image img = new Image(WoodShovel.class.getResource("/item/wood_shovel.png").toString());
+    private final Image img = new Image(WoodShovel.class.getResource("/item/wood_shovel.png").toString());
 
     @Override
     public int getId() {

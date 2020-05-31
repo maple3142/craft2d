@@ -3,7 +3,7 @@ package net.maple3142.craft2d.utils;
 import java.util.Random;
 
 public class PerlinNoise {
-    private Random random;
+    private final Random random;
 
     public PerlinNoise(long seed) {
         random = new Random(seed);

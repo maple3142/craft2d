@@ -6,14 +6,14 @@ import net.maple3142.craft2d.ui.storage.PlayerInventory;
 import net.maple3142.craft2d.utils.Vector2;
 
 public class Player {
-    private static Image steve = new Image(Player.class.getResource("/entity/steve_front.png").toString());
+    private static final Image steve = new Image(Player.class.getResource("/entity/steve_front.png").toString());
     public Vector2 position; // (x, y) represents left bottom of the entity
     public PlayerInventory inventory = new PlayerInventory();
-    private int entityWidth = 1;
-    private int entityHeight = 2;
-    private Vector2 velocity = new Vector2();
-    private Vector2 gravityAcceleration = new Vector2(0, -0.0001);
-    private World world;
+    private final int entityWidth = 1;
+    private final int entityHeight = 2;
+    private final Vector2 velocity = new Vector2();
+    private final Vector2 gravityAcceleration = new Vector2(0, -0.0001);
+    private final World world;
 
     public Player(World world, int x, int y) {
         position = new Vector2(x, y);

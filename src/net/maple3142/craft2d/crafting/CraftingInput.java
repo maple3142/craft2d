@@ -3,7 +3,7 @@ package net.maple3142.craft2d.crafting;
 import net.maple3142.craft2d.item.Item;
 
 public class CraftingInput {
-    private Item[] items;
+    private final Item[] items;
 
     public CraftingInput(Item... items) {
         if (items.length != 9) throw new IllegalArgumentException("Invalid crafting input");

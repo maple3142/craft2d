@@ -20,7 +20,7 @@ public class WoodPickaxe implements Item, Breakable, Tool {
             0, Stick.id, 0,
             0, Stick.id, 0);
 
-    private Image img = new Image(WoodPickaxe.class.getResource("/item/wood_pickaxe.png").toString());
+    private final Image img = new Image(WoodPickaxe.class.getResource("/item/wood_pickaxe.png").toString());
 
     @Override
     public int getId() {

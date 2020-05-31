@@ -10,6 +10,7 @@ import net.maple3142.craft2d.ui.storage.ChestUi;
 
 public class Chest implements Block, Interactable {
     public static Image image = new Image(Chest.class.getResource("/block/chest.png").toString());
+    private final ItemStack[] storage = new ItemStack[27];
 
     @Override
     public Image getImage() {
@@ -30,8 +31,6 @@ public class Chest implements Block, Interactable {
     public ItemStack getDroppedItem(Tool brokeBy) {
         return new ItemStack(new CraftingTableBlock());
     }
-
-    private ItemStack[] storage = new ItemStack[27];
 
     @Override
     public void onInteracted(Game game) {

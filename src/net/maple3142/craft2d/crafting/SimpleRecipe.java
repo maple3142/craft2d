@@ -4,11 +4,11 @@ import net.maple3142.craft2d.item.Item;
 
 public class SimpleRecipe<T extends Item> implements Recipe<T> {
 
-    private int width;
-    private int height;
-    private int[] ids;
-    private Class<T> clz;
-    private int num;
+    private final int width;
+    private final int height;
+    private final int[] ids;
+    private final Class<T> clz;
+    private final int num;
 
     public SimpleRecipe(Class<T> clz, int num, int width, int height, int... ids) {
         // a simple recipe helper to match id only

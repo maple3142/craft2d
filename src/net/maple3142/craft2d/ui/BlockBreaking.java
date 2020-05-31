@@ -12,13 +12,15 @@ public class BlockBreaking {
     private static final double width = 80;
     private static final double height = 10;
     private static final double borderWidth = 1;
-
-    private Game game;
-
+    public boolean isBreaking = false;
+    public int currentBreakingX;
+    public int currentBreakingY;
+    public int startBreakingTime = 0;
+    public int endBreakingTime = 0;
+    private final Game game;
     public BlockBreaking(Game game) {
         this.game = game;
     }
-
 
     public void drawProgressBar(GraphicsContext ctx, MouseTracker mouse, double percent) {
         double x = mouse.getX() - width / 2;
@@ -34,12 +36,6 @@ public class BlockBreaking {
         ctx.setFill(Color.AQUA);
         ctx.fillRect(x + borderWidth, y + borderWidth, width * percent, height - 2 * borderWidth);
     }
-
-    public boolean isBreaking = false;
-    public int currentBreakingX;
-    public int currentBreakingY;
-    public int startBreakingTime = 0;
-    public int endBreakingTime = 0;
 
     public void startBreaking(int x, int y) {
         isBreaking = true;

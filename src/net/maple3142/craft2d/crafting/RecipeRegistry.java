@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RecipeRegistry {
 
-    private static RecipeRegistry instance = new RecipeRegistry();
+    private static final RecipeRegistry instance = new RecipeRegistry();
 
     static {
         try {
@@ -29,7 +29,7 @@ public class RecipeRegistry {
         }
     }
 
-    private List<Recipe<? extends Item>> recipes = new ArrayList<>();
+    private final List<Recipe<? extends Item>> recipes = new ArrayList<>();
 
     private RecipeRegistry() {
     }

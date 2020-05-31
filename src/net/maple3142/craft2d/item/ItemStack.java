@@ -3,7 +3,7 @@ package net.maple3142.craft2d.item;
 public class ItemStack {
     public static int maxItems = 64;
     private int numItems;
-    private Item item;
+    private final Item item;
 
     public ItemStack(Item item) {
         this.item = item;
@@ -38,7 +38,6 @@ public class ItemStack {
         return item;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isStackable() {
         return item instanceof Stackable;
     }

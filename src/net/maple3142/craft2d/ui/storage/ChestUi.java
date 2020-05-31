@@ -14,6 +14,11 @@ import net.maple3142.craft2d.ui.BlockUi;
 
 public class ChestUi extends BlockUi implements UiOpenable {
 
+    private static final double width = 352;
+    private static final double height = 332;
+    private static final int itemBorderWidth = 4;
+    private static final int itemDefaultSize = 32;
+    public static Image img = new Image(PlayerInventory.class.getResource("/ui/chest.png").toString());
     public ChestUi(ItemStack[] storage) {
         this.storage = storage;
     }
@@ -27,13 +32,6 @@ public class ChestUi extends BlockUi implements UiOpenable {
     public void onClosed(Player player) {
 
     }
-
-    private static final double width = 352;
-    private static final double height = 332;
-    public static Image img = new Image(PlayerInventory.class.getResource("/ui/chest.png").toString());
-
-    private static final int itemBorderWidth = 4;
-    private static final int itemDefaultSize = 32;
 
     private void fillRowItems(ItemStack[] storage, GraphicsContext ctx, double x, double y, int idOffset) {
         double startX = x + itemBorderWidth;
