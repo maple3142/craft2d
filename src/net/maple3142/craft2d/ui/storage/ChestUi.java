@@ -7,7 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.MouseTracker;
-import net.maple3142.craft2d.Player;
+import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.ui.BlockUi;

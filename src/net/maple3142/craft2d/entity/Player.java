@@ -1,11 +1,13 @@
-package net.maple3142.craft2d;
+package net.maple3142.craft2d.entity;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import net.maple3142.craft2d.Game;
+import net.maple3142.craft2d.World;
 import net.maple3142.craft2d.ui.storage.PlayerInventory;
 import net.maple3142.craft2d.utils.Vector2;
 
-public class Player {
+public class Player implements Entity {
     private static final Image steve = new Image(Player.class.getResource("/entity/steve_front.png").toString());
     public Vector2 position; // (x, y) represents left bottom of the entity
     public PlayerInventory inventory = new PlayerInventory();
@@ -15,12 +17,12 @@ public class Player {
     private final Vector2 gravityAcceleration = new Vector2(0, -0.0001);
     private final World world;
 
-    public Player(World world, int x, int y) {
+    public Player(World world, double x, double y) {
         position = new Vector2(x, y);
         this.world = world;
     }
 
-    public void processMovement(int dt) {
+    public void loop(int dt) {
         if (bottomIsEmpty()) {
             velocity.plus(Vector2.multiply(gravityAcceleration, dt));
         }
@@ -38,31 +40,36 @@ public class Player {
         }
         position.plus(Vector2.multiply(velocity, dt));
         velocity.x *= 0.9;
-        if (world.getPos(position.x + 0.5, position.y) != null) {
+        if (world.getPos(position.x, position.y - 1) != null) {
             position.y = Math.ceil(position.y);
         }
     }
 
     public void draw(GraphicsContext ctx, double leftX, double topY) {
-        int pX = (int) ((position.x - leftX) * Game.blockWidth);
-        int pY = (int) ((topY - position.y - entityHeight) * Game.blockHeight);
+        int pX = (int) ((position.x - 0.5 - leftX) * Game.blockWidth);
+        int pY = (int) ((topY - (position.y + 1)) * Game.blockHeight);
         ctx.drawImage(steve, pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
     }
 
+    @Override
+    public Vector2 getPosition() {
+        return position;
+    }
+
     public boolean topIsEmpty() {
-        return world.getPos(position.x + 0.5, position.y + 2) == null;
+        return world.getPos(position.x, position.y + 1) == null;
     }
 
     public boolean bottomIsEmpty() {
-        return world.getPos(position.x + 0.5, position.y - 0.01) == null;
+        return world.getPos(position.x, position.y - 1.1) == null;
     }
 
     public boolean canGoRight() {
-        return world.getPos(position.x + 1, position.y) == null && world.getPos(position.x + 1, position.y + 1) == null;
+        return world.getPos(position.x + 0.5, position.y - 1) == null && world.getPos(position.x + 0.5, position.y) == null;
     }
 
     public boolean canGoLeft() {
-        return world.getPos(position.x, position.y) == null && world.getPos(position.x, position.y + 1) == null;
+        return world.getPos(position.x - 0.5, position.y - 1) == null && world.getPos(position.x - 0.5, position.y) == null;
     }
 
     public void moveRight() {
@@ -81,13 +88,5 @@ public class Player {
         if (velocity.y == 0 && !bottomIsEmpty()) {
             velocity.y += 0.03;
         }
-    }
-
-    public double getCenterX() {
-        return position.x + 0.5;
-    }
-
-    public double getCenterY() {
-        return position.y + 1;
     }
 }

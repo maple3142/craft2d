@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import net.maple3142.craft2d.block.Interactable;
+import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
 import net.maple3142.craft2d.item.block.*;
@@ -35,7 +36,7 @@ public class Game {
     public static final int mouseRange = 6;
     public MouseTracker mouseTracker = new MouseTracker();
     public World world = World.generateRandom(78456);
-    public Player player = new Player(world, world.spawnX, world.spawnY);
+    public Player player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
     private final DoubleProperty widthProperty = new SimpleDoubleProperty();
     private final DoubleProperty heightProperty = new SimpleDoubleProperty();
     private final Scene scene;
@@ -196,8 +197,8 @@ public class Game {
             int bx = (int) (leftX + x / blockWidth);
             int by = (int) (bottomY + (double) (height / blockHeight) - (y / blockHeight)); // don't change it to (height - y) / blockHeight
 
-            double pX = (player.getCenterX() - leftX) * Game.blockWidth;
-            double pY = (topY - player.getCenterY()) * Game.blockHeight;
+            double pX = (player.position.x - leftX) * Game.blockWidth;
+            double pY = (topY - player.position.y) * Game.blockHeight;
             double dx = x - pX;
             double dy = y - pY;
             double dist = Math.sqrt(dx * dx + dy * dy);
@@ -245,7 +246,7 @@ public class Game {
                 }
             }
         }
-        player.processMovement(dt);
+        player.loop(dt);
 
         boolean isCameraMoved = moveCameraAccordingToPlayer(width, height);
 
@@ -260,8 +261,8 @@ public class Game {
                 hudCtx.setLineWidth(3);
                 hudCtx.setStroke(Color.BLACK);
                 double r = mouseRange * blockWidth;
-                double pX = (player.getCenterX() - leftX) * Game.blockWidth;
-                double pY = (topY - player.getCenterY()) * Game.blockHeight;
+                double pX = (player.position.x - leftX) * Game.blockWidth;
+                double pY = (topY - player.position.y) * Game.blockHeight;
                 hudCtx.strokeArc(pX - r, pY - r, 2 * r, 2 * r, 0, 360, ArcType.OPEN);
             }
 
