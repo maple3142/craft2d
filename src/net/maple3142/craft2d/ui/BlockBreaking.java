@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import net.maple3142.craft2d.BreakingTimeCalculator;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.item.ItemStack;
 
 public class BlockBreaking {
 
@@ -18,6 +19,7 @@ public class BlockBreaking {
     public int startBreakingTime = 0;
     public int endBreakingTime = 0;
     private final Game game;
+
     public BlockBreaking(Game game) {
         this.game = game;
     }
@@ -47,18 +49,19 @@ public class BlockBreaking {
         endBreakingTime = startBreakingTime + time;
     }
 
-    public void endBreaking(boolean success) {
+    public ItemStack endBreaking(boolean success) {
+        // returns dropped item stack if exists
         if (success) {
             var blk = game.world.blocks[currentBreakingY][currentBreakingX];
             if (blk != null) {
                 game.world.blocks[currentBreakingY][currentBreakingX] = null;
                 var tool = game.player.inventory.getSelectedTool();
-                var drop = blk.getDroppedItem(tool);
-                System.out.println(drop);
+                return blk.getDroppedItem(tool);
             }
         }
         isBreaking = false;
         endBreakingTime = 0;
+        return null;
     }
 
     public double getBreakingPercentage(int timeMs) {

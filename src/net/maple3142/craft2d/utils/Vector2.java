@@ -9,9 +9,22 @@ public class Vector2 {
         y = 0;
     }
 
+    public Vector2(Vector2 vec) {
+        x = vec.x;
+        y = vec.y;
+    }
+
     public Vector2(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Vector2 plus(Vector2 a, Vector2 b) {
+        return new Vector2(a.x + b.x, a.y + b.y);
+    }
+
+    public static Vector2 subtract(Vector2 a, Vector2 b) {
+        return new Vector2(a.x - b.x, a.y - b.y);
     }
 
     public static Vector2 multiply(Vector2 vec, double k) {
@@ -30,6 +43,10 @@ public class Vector2 {
     public void multiply(double k) {
         x *= k;
         y *= k;
+    }
+
+    public double norm() {
+        return Math.sqrt(x * x + y * y);
     }
 
     public String toString() {

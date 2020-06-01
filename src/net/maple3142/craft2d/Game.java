@@ -16,6 +16,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import net.maple3142.craft2d.block.Interactable;
+import net.maple3142.craft2d.entity.Entity;
+import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
@@ -26,6 +28,7 @@ import net.maple3142.craft2d.item.tool.WoodPickaxe;
 import net.maple3142.craft2d.item.tool.WoodShovel;
 import net.maple3142.craft2d.item.tool.WoodSword;
 import net.maple3142.craft2d.ui.BlockBreaking;
+import net.maple3142.craft2d.utils.Vector2;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +63,9 @@ public class Game {
     private double bottomY = World.worldHeight;
     private UiOpenable currentUi = null;
     private int lastTimeMs;
+
+    private Set<Entity> entities = new HashSet<>();
+
     private final Image sun = new Image(getClass().getResource("/background/sun.png").toString());
     private final Set<KeyCode> pressedKeys = new HashSet<>();
 
@@ -127,22 +133,22 @@ public class Game {
         lastTimeMs = (int) (System.nanoTime() / 1000000);
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new ChestBlock());
-        player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
-        player.inventory.storage[2] = new ItemStack(new WoodSword());
-        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-        player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
-        player.inventory.storage[5] = new ItemStack(new WoodShovel());
-        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
-        player.inventory.storage[5] = new ItemStack(new WoodAxe());
-        player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
-        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
-        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
-        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
-        player.inventory.storage[21] = new ItemStack(new StoneBlock());
-        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
-        player.inventory.storage[28] = new ItemStack(new StoneBlock());
-        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
+//        player.inventory.storage[0] = new ItemStack(new ChestBlock());
+//        player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
+//        player.inventory.storage[2] = new ItemStack(new WoodSword());
+//        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+//        player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
+//        player.inventory.storage[5] = new ItemStack(new WoodShovel());
+//        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
+//        player.inventory.storage[7] = new ItemStack(new WoodAxe());
+//        player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
+//        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
+//        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
+//        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
+//        player.inventory.storage[21] = new ItemStack(new StoneBlock());
+//        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
+//        player.inventory.storage[28] = new ItemStack(new StoneBlock());
+//        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
     }
 
     public Scene getScene() {
@@ -187,7 +193,11 @@ public class Game {
 
         {
             if (blockBreaking.isBreaking && timeMs >= blockBreaking.endBreakingTime) {
-                blockBreaking.endBreaking(true);
+                var pos = new Vector2(blockBreaking.currentBreakingX + 0.5, blockBreaking.currentBreakingY + 0.5);
+                var dropped = blockBreaking.endBreaking(true);
+                if (dropped != null) {
+                    entities.add(new FloatingItem(dropped, pos));
+                }
             }
         }
 
@@ -232,7 +242,7 @@ public class Game {
 
         }
 
-        // move player
+        // move entities
         {
             if (currentUi == null) {
                 if (pressedKeys.contains(KeyCode.D)) {
@@ -246,7 +256,18 @@ public class Game {
                 }
             }
         }
-        player.loop(dt);
+        player.loop(world, dt);
+        var entIt = entities.iterator();
+        while (entIt.hasNext()) {
+            var ent = entIt.next();
+            ent.loop(world, dt);
+            if (Vector2.subtract(player.position, ent.getPosition()).norm() <= 1.5) {
+                boolean remove = player.onInteractedWithEntity(ent);
+                if (remove) {
+                    entIt.remove();
+                }
+            }
+        }
 
         boolean isCameraMoved = moveCameraAccordingToPlayer(width, height);
 
@@ -287,7 +308,11 @@ public class Game {
             }
         }
 
+        // draw entities
         player.draw(entityCtx, leftX, topY);
+        for (var ent : entities) {
+            ent.draw(entityCtx, leftX, topY);
+        }
 
         {
             // render world blocks

@@ -7,11 +7,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.MouseTracker;
-import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.ReflectionHelper;
 import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.crafting.CraftingInput;
 import net.maple3142.craft2d.crafting.RecipeRegistry;
+import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
@@ -31,6 +31,28 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
 
     public PlayerInventory() {
         super(36); // same layout as Minecraft survival inventory
+    }
+
+    public ItemStack tryFillItemStack(ItemStack stk) {
+        int i = 0;
+        while (stk != null && stk.getItemsNum() > 0) {
+            if (storage[i] == null) {
+                storage[i] = stk;
+                stk = null;
+            } else if (storage[i].isStackable() && stk.isStackable() && storage[i].getItem().equals(stk.getItem())) {
+                int s1 = storage[i].getItemsNum();
+                int s2 = stk.getItemsNum();
+                if (s1 + s2 > ItemStack.maxItems) {
+                    storage[i].setItemsNum(ItemStack.maxItems);
+                    stk.setItemsNum(s1 + s2 - ItemStack.maxItems);
+                } else {
+                    storage[i].addItemsNum(s2);
+                    stk = null;
+                }
+            }
+            i++;
+        }
+        return stk;
     }
 
     public void drawInventoryBar(GraphicsContext ctx, double gameWidth, double gameHeight) {

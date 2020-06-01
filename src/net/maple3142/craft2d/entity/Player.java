@@ -14,7 +14,6 @@ public class Player implements Entity {
     private final int entityWidth = 1;
     private final int entityHeight = 2;
     private final Vector2 velocity = new Vector2();
-    private final Vector2 gravityAcceleration = new Vector2(0, -0.0001);
     private final World world;
 
     public Player(World world, double x, double y) {
@@ -22,7 +21,7 @@ public class Player implements Entity {
         this.world = world;
     }
 
-    public void loop(int dt) {
+    public void loop(World world, int dt) {
         if (bottomIsEmpty()) {
             velocity.plus(Vector2.multiply(gravityAcceleration, dt));
         }
@@ -88,5 +87,19 @@ public class Player implements Entity {
         if (velocity.y == 0 && !bottomIsEmpty()) {
             velocity.y += 0.03;
         }
+    }
+
+    public boolean onInteractedWithEntity(Entity ent) {
+        // returns true if entity should be removed
+        if (ent instanceof FloatingItem) {
+            var remain = inventory.tryFillItemStack(((FloatingItem) ent).stack);
+            if (remain != null) {
+                ((FloatingItem) ent).stack = remain;
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return true;
     }
 }
