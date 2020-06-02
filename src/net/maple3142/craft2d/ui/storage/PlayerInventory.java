@@ -6,20 +6,20 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.ReflectionHelper;
-import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.crafting.CraftingInput;
 import net.maple3142.craft2d.crafting.RecipeRegistry;
-import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.ui.BlockUi;
+import net.maple3142.craft2d.ui.UiOpenable;
 
 public class PlayerInventory extends BlockUi implements UiOpenable {
-    private static final double width = 328;
-    private static final double height = 40;
+    private static final double barWidth = 328;
+    private static final double barHeight = 40;
     private static final int bottomPadding = 10;
     private static final int itemBorderWidth = 4;
     private static final int itemDefaultSize = 32;
@@ -56,9 +56,9 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     }
 
     public void drawInventoryBar(GraphicsContext ctx, double gameWidth, double gameHeight) {
-        double x = (gameWidth - width) / 2;
-        double y = gameHeight - height - bottomPadding;
-        ctx.drawImage(inventoryBarImg, x, y, width, height);
+        double x = (gameWidth - barWidth) / 2;
+        double y = gameHeight - barHeight - bottomPadding;
+        ctx.drawImage(inventoryBarImg, x, y, barWidth, barHeight);
 
         double startX = x + itemBorderWidth;
         for (int i = 0; i <= 8; i++) {
@@ -101,17 +101,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     }
 
     @Override
-    public void onOpened(Player player) {
-
-    }
-
-    @Override
-    public void onClosed(Player player) {
-
-    }
-
-    @Override
-    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Player player) {
+    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Game game) {
         double invX = (gameWidth - inventoryWidth) / 2;
         double invY = (gameHeight - inventoryHeight) / 2;
         ctx.drawImage(inventoryImg, invX, invY, inventoryWidth, inventoryHeight);
@@ -157,9 +147,13 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     private ItemStack[] craftingStorage = new ItemStack[5];
 
     @Override
-    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Player player) {
+    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Game game) {
         int id = calculateIdFromRelativePosition(x, y);
-        if (id != -1) {
+        if (id == -2) {
+            dropDraggedStack(game);
+            return;
+        }
+        if (id >= 0) {
             if (event.isPrimaryButtonDown()) {
                 draggedStack = putAllItems(storage, id, draggedStack);
             } else if (event.isSecondaryButtonDown()) {
@@ -170,7 +164,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
         int craftingId = calculateIdFromRelativePositionForCrafting(x, y);
         if (craftingId == 4) {
             handleResultBlock(craftingStorage, event);
-        } else if (craftingId != -1) {
+        } else if (craftingId >= 0) {
             if (event.isPrimaryButtonDown()) {
                 draggedStack = putAllItems(craftingStorage, craftingId, draggedStack);
             } else if (event.isSecondaryButtonDown()) {
@@ -224,6 +218,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     }
 
     public int calculateIdFromRelativePosition(double x, double y) {
+        if (x < 0 || y < 0 || x > inventoryWidth || y > inventoryHeight) return -2;
         int row = -1, col = -1;
 
         if (166 <= y && y <= 270 && 14 <= x && x <= 334) {
@@ -245,10 +240,10 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     }
 
     @Override
-    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Player player) {
+    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Game game) {
         double invX = (gameWidth - inventoryWidth) / 2;
         double invY = (gameHeight - inventoryHeight) / 2;
-        handleMousePressedRelativeCoordinates(event, event.getX() - invX, event.getY() - invY, player);
+        handleMousePressedRelativeCoordinates(event, event.getX() - invX, event.getY() - invY, game);
 
         var arr = new Item[9];
         // from 2x2 to 3x3

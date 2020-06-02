@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
-import net.maple3142.craft2d.item.block.CraftingTableBlock;
+import net.maple3142.craft2d.item.block.ChestBlock;
 import net.maple3142.craft2d.ui.storage.ChestUi;
 
 public class Chest implements Block, Interactable, Wooden {
@@ -30,7 +30,7 @@ public class Chest implements Block, Interactable, Wooden {
 
     @Override
     public ItemStack getDroppedItem(Tool brokeBy) {
-        return new ItemStack(new CraftingTableBlock());
+        return new ItemStack(new ChestBlock());
     }
 
     @Override

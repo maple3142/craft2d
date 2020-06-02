@@ -6,11 +6,13 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
-import net.maple3142.craft2d.entity.Player;
+import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.item.ItemStack;
+import net.maple3142.craft2d.utils.Vector2;
 
-public abstract class BlockUi {
+public abstract class BlockUi implements UiOpenable {
 
     public ItemStack[] storage;
     protected ItemStack draggedStack;
@@ -120,7 +122,7 @@ public abstract class BlockUi {
         return tmp;
     }
 
-    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Player player) {
+    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Game game) {
         int id = calculateIdFromRelativePosition(x, y);
         if (id != -1) {
             if (event.isPrimaryButtonDown()) {
@@ -131,5 +133,26 @@ public abstract class BlockUi {
         }
     }
 
-    protected abstract int calculateIdFromRelativePosition(double x, double y);
+    @Override
+    public void onOpened(Game game) {
+
+    }
+
+    @Override
+    public void onClosed(Game game) {
+        dropDraggedStack(game);
+    }
+
+    public void dropDraggedStack(Game game) {
+        if (draggedStack != null) {
+            var pos = game.player.position;
+            // TODO: change this according to player's facing
+            var newPos = new Vector2(pos.x + 2, pos.y);
+            var item = new FloatingItem(draggedStack, newPos);
+            game.entities.add(item);
+            draggedStack = null;
+        }
+    }
+
+    protected abstract int calculateIdFromRelativePosition(double x, double y); // -1=noop -2=outside of ui
 }

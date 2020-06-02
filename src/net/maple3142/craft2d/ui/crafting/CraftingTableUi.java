@@ -6,15 +6,15 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
-import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.ReflectionHelper;
-import net.maple3142.craft2d.UiOpenable;
 import net.maple3142.craft2d.crafting.CraftingInput;
 import net.maple3142.craft2d.crafting.RecipeRegistry;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.ui.BlockUi;
+import net.maple3142.craft2d.ui.UiOpenable;
 import net.maple3142.craft2d.ui.storage.PlayerInventory;
 
 public class CraftingTableUi extends BlockUi implements UiOpenable {
@@ -29,17 +29,16 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
         super(10);
     }
 
-    @Override
-    public void onOpened(Player player) {
-    }
 
     @Override
-    public void onClosed(Player player) {
+    public void onClosed(Game game) {
+        super.onClosed(game);
         storage = new ItemStack[9];
     }
 
     @Override
-    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Player player) {
+    public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Game game) {
+        var player = game.player;
         double ctX = (gameWidth - width) / 2;
         double ctY = (gameHeight - height) / 2;
         ctx.drawImage(img, ctX, ctY, width, height);
@@ -106,10 +105,10 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
 
 
     @Override
-    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Player player) {
+    public void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Game game) {
         double ctX = (gameWidth - width) / 2;
         double ctY = (gameHeight - height) / 2;
-        handleMousePressedRelativeCoordinates(event, event.getX() - ctX, event.getY() - ctY, player);
+        handleMousePressedRelativeCoordinates(event, event.getX() - ctX, event.getY() - ctY, game);
 
         var arr = new Item[9];
         for (int i = 0; i < 9; i++) {
@@ -154,11 +153,15 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     }
 
     @Override
-    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Player player) {
+    public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Game game) {
         int id = calculateIdFromRelativePosition(x, y);
+        if (id == -2) {
+            dropDraggedStack(game);
+            return;
+        }
         if (id == 9) {
             handleResultBlock(storage, event); // special handling for result block
-        } else if (id != -1) {
+        } else if (id >= 0) {
             if (event.isPrimaryButtonDown()) {
                 draggedStack = putAllItems(storage, id, draggedStack);
             } else if (event.isSecondaryButtonDown()) {
@@ -166,18 +169,21 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
             }
         }
 
-        int invId = player.inventory.calculateIdFromRelativePosition(x, y); // because crafting table and inventory have same size
-        if (invId != -1) {
+        var inv = game.player.inventory;
+        int invId = inv.calculateIdFromRelativePosition(x, y); // because crafting table and inventory have same size
+
+        if (invId >= 0) {
             if (event.isPrimaryButtonDown()) {
-                draggedStack = putAllItems(player.inventory.storage, invId, draggedStack);
+                draggedStack = putAllItems(inv.storage, invId, draggedStack);
             } else if (event.isSecondaryButtonDown()) {
-                draggedStack = putOneItem(player.inventory.storage, invId, draggedStack);
+                draggedStack = putOneItem(inv.storage, invId, draggedStack);
             }
         }
     }
 
     @Override
     protected int calculateIdFromRelativePosition(double x, double y) {
+        if (x < 0 || y < 0 || x > width || y > height) return -2;
         int row = -1, col = -1;
         if (60 <= x && x <= 164 && 34 <= y && y <= 138) {
             col = (int) ((x - 64) / 35); // 35=(164-60+1)/3

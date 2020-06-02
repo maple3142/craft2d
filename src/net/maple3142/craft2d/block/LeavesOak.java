@@ -4,7 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
-import net.maple3142.craft2d.item.block.LogOakBlock;
 
 public class LeavesOak implements Block, Wooden {
     public static Image image = new Image(LeavesOak.class.getResource("/block/leaves_oak.png").toString());
@@ -26,6 +25,6 @@ public class LeavesOak implements Block, Wooden {
 
     @Override
     public ItemStack getDroppedItem(Tool brokeBy) {
-        return new ItemStack(new LogOakBlock());
+        return null;
     }
 }

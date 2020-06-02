@@ -28,6 +28,7 @@ import net.maple3142.craft2d.item.tool.WoodPickaxe;
 import net.maple3142.craft2d.item.tool.WoodShovel;
 import net.maple3142.craft2d.item.tool.WoodSword;
 import net.maple3142.craft2d.ui.BlockBreaking;
+import net.maple3142.craft2d.ui.UiOpenable;
 import net.maple3142.craft2d.utils.Vector2;
 
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public class Game {
     private UiOpenable currentUi = null;
     private int lastTimeMs;
 
-    private Set<Entity> entities = new HashSet<>();
+    public Set<Entity> entities = new HashSet<>();
 
     private final Image sun = new Image(getClass().getResource("/background/sun.png").toString());
     private final Set<KeyCode> pressedKeys = new HashSet<>();
@@ -133,22 +134,22 @@ public class Game {
         lastTimeMs = (int) (System.nanoTime() / 1000000);
 
         // testing inventory
-//        player.inventory.storage[0] = new ItemStack(new ChestBlock());
-//        player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
-//        player.inventory.storage[2] = new ItemStack(new WoodSword());
-//        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-//        player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
-//        player.inventory.storage[5] = new ItemStack(new WoodShovel());
-//        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
-//        player.inventory.storage[7] = new ItemStack(new WoodAxe());
-//        player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
-//        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
-//        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
-//        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
-//        player.inventory.storage[21] = new ItemStack(new StoneBlock());
-//        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
-//        player.inventory.storage[28] = new ItemStack(new StoneBlock());
-//        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
+        player.inventory.storage[0] = new ItemStack(new ChestBlock());
+        player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
+        player.inventory.storage[2] = new ItemStack(new WoodSword());
+        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+        player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
+        player.inventory.storage[5] = new ItemStack(new WoodShovel());
+        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
+        player.inventory.storage[7] = new ItemStack(new WoodAxe());
+        player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
+        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
+        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
+        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
+        player.inventory.storage[21] = new ItemStack(new StoneBlock());
+        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
+        player.inventory.storage[28] = new ItemStack(new StoneBlock());
+        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
     }
 
     public Scene getScene() {
@@ -304,7 +305,7 @@ public class Game {
                 uiBgLayer.setBlendMode(BlendMode.DARKEN);
                 uiBgCtx.setFill(Color.rgb(64, 64, 64, 0.5));
                 uiBgCtx.fillRect(0, 0, width, height);
-                currentUi.drawUi(uiCtx, mouseTracker, width, height, player);
+                currentUi.drawUi(uiCtx, mouseTracker, width, height, this);
             }
         }
 
@@ -352,7 +353,7 @@ public class Game {
             if (currentUi == null) {
                 openUi(player.inventory);
             } else {
-                currentUi.onClosed(player);
+                currentUi.onClosed(this);
                 currentUi = null;
             }
         }
@@ -374,12 +375,12 @@ public class Game {
 
     public void onMousePressed(MouseEvent event) {
         if (currentUi != null) {
-            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get(), player);
+            currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get(), this);
         }
     }
 
     public void openUi(UiOpenable ui) {
         currentUi = ui;
-        currentUi.onOpened(player);
+        currentUi.onOpened(this);
     }
 }
