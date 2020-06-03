@@ -21,7 +21,7 @@ public class CoalOre implements BreakableBlock, StoneLike {
 
     @Override
     public double getHardness() {
-        return 3.5;
+        return 3;
     }
 
     @Override

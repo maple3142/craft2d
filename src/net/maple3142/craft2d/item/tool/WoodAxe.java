@@ -56,7 +56,7 @@ public class WoodAxe implements Item, Breakable, Tool {
     public double getHardnessMultiplier(Block target) {
         var clz = target.getClass();
         if (Wooden.class.isAssignableFrom(clz)) { // clz implements Wooden
-            return 0.5;
+            return 0.7;
         }
         return 1;
     }

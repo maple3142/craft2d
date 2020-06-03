@@ -57,7 +57,7 @@ public class WoodShovel implements Item, Breakable, Tool {
     public double getHardnessMultiplier(Block target) {
         var clz = target.getClass();
         if (clz == Dirt.class || clz == Grass.class) {
-            return 0.5;
+            return 0.7;
         }
         return 1;
     }

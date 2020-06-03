@@ -8,19 +8,20 @@ import net.maple3142.craft2d.crafting.SimpleRecipe;
 import net.maple3142.craft2d.item.Breakable;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.Tool;
+import net.maple3142.craft2d.item.block.CobblestoneBlock;
 import net.maple3142.craft2d.item.block.PlankOakBlock;
 import net.maple3142.craft2d.item.ingredient.Stick;
 
-public class WoodPickaxe implements Item, Breakable, Tool {
+public class StonePickaxe implements Item, Breakable, Tool {
 
-    public static final int id = 7;
+    public static final int id = 18;
 
-    public static final Recipe<WoodPickaxe> recipe = new SimpleRecipe<>(WoodPickaxe.class, 1, 3, 3,
-            PlankOakBlock.id, PlankOakBlock.id, PlankOakBlock.id,
+    public static final Recipe<StonePickaxe> recipe = new SimpleRecipe<>(StonePickaxe.class, 1, 3, 3,
+            CobblestoneBlock.id, CobblestoneBlock.id, CobblestoneBlock.id,
             0, Stick.id, 0,
             0, Stick.id, 0);
 
-    private final Image img = new Image(WoodPickaxe.class.getResource("/item/wood_pickaxe.png").toString());
+    private final Image img = new Image(StonePickaxe.class.getResource("/item/stone_pickaxe.png").toString());
 
     @Override
     public int getId() {
@@ -34,7 +35,7 @@ public class WoodPickaxe implements Item, Breakable, Tool {
 
     @Override
     public boolean equals(Item item) {
-        return item instanceof WoodPickaxe;
+        return item instanceof StonePickaxe;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class WoodPickaxe implements Item, Breakable, Tool {
     public double getHardnessMultiplier(Block target) {
         var clz = target.getClass();
         if (StoneLike.class.isAssignableFrom(clz)) {
-            return 0.7;
+            return 0.5;
         }
         return 1;
     }

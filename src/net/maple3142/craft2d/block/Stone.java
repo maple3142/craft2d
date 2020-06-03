@@ -21,7 +21,7 @@ public class Stone implements BreakableBlock, StoneLike {
 
     @Override
     public double getHardness() {
-        return 3;
+        return 2.5;
     }
 
     @Override

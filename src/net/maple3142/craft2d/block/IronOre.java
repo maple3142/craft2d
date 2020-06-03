@@ -21,7 +21,7 @@ public class IronOre implements BreakableBlock, StoneLike {
 
     @Override
     public double getHardness() {
-        return 4.5;
+        return 4;
     }
 
     @Override
