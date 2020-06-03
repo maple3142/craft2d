@@ -1,24 +1,28 @@
 package net.maple3142.craft2d;
 
 import net.maple3142.craft2d.block.*;
+import net.maple3142.craft2d.utils.OpenSimplexNoise;
 import net.maple3142.craft2d.utils.PerlinNoise;
 
+import java.util.Random;
+
 public class World {
-    public static int worldHeight = 64;
+    public static int worldHeight = 256;
     public static int worldWidth = 8192;
-    public static int groundLevel = 27;
+    public static int groundBaseLevel = 128;
     public static int groundHeightChanges = 16;
     public Block[][] blocks = new Block[worldHeight][worldWidth];
     public int spawnX;
     public int spawnY;
 
     public static World generateRandom(long seed) {
+        var seedGen = new Random(seed);
         var world = new World();
-        var dirtTopNoise = new PerlinNoise(seed);
-        var dirtTop = dirtTopNoise.generateNoiseInteger(groundLevel, worldWidth, groundHeightChanges, 12, 2);
-        var dirtLayerHeightNoise = new PerlinNoise(seed);
+        var dirtTopNoise = new PerlinNoise(seedGen.nextLong());
+        var dirtTop = dirtTopNoise.generateNoiseInteger(groundBaseLevel, worldWidth, groundHeightChanges, 12, 2);
+        var dirtLayerHeightNoise = new PerlinNoise(seedGen.nextLong());
         var dirtLayerHeight = dirtLayerHeightNoise.generateNoiseInteger(0, worldWidth, 4, 6, 2);
-        var treeNoise = new PerlinNoise(seed);
+        var treeNoise = new PerlinNoise(seedGen.nextLong());
         var treeThreshold = treeNoise.generateNoise(0, worldWidth, 4, 6, 2);
 
         int lastTreeX = -10;
@@ -56,6 +60,34 @@ public class World {
         if (world.blocks[world.spawnY][world.spawnX] != null) {
             world.spawnX++;
         }
+
+        var caveNoise = new OpenSimplexNoise(seedGen.nextInt());
+        for (int x = 0; x < worldWidth; x++) {
+            for (int y = 1; y < dirtTop[x] - 5; y++) {
+                if (caveNoise.eval(x / 5.0, y / 5.0) < -0.2) {
+                    world.blocks[y][x] = null;
+                }
+            }
+        }
+
+        var coalNoise = new OpenSimplexNoise(seedGen.nextInt());
+        for (int x = 0; x < worldWidth; x++) {
+            for (int y = 1; y < dirtTop[x] - 7; y++) {
+                if (coalNoise.eval(x / 3.0, y / 3.0) < -0.6) {
+                    world.blocks[y][x] = new CoalOre();
+                }
+            }
+        }
+
+        var ironNoise = new OpenSimplexNoise(seedGen.nextInt());
+        for (int x = 0; x < worldWidth; x++) {
+            for (int y = 1; y < dirtTop[x] - 27; y++) {
+                if (ironNoise.eval(x / 3.0, y / 3.0) < -0.65) {
+                    world.blocks[y][x] = new IronOre();
+                }
+            }
+        }
+
         return world;
     }
 

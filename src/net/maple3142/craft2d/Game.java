@@ -33,6 +33,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Game {
+
+    private boolean DEBUG_FREE_CAMERA_MOVING = false;
+
     public final static int blockWidth = 32;
     public final static int blockHeight = 32;
     public static final int mouseRange = 6;
@@ -130,6 +133,7 @@ public class Game {
         timer.start();
         root.requestFocus();
         lastTimeMs = (int) (System.nanoTime() / 1000000);
+        moveCameraAccordingToPlayer((int) widthProperty.get(), (int) heightProperty.get());
 
         // testing inventory
         player.inventory.storage[0] = new ItemStack(new CoalOreBlock());
@@ -253,6 +257,21 @@ public class Game {
                 if (pressedKeys.contains(KeyCode.W) || pressedKeys.contains(KeyCode.SPACE)) {
                     player.jump();
                 }
+                if (DEBUG_FREE_CAMERA_MOVING) {
+                    if (pressedKeys.contains(KeyCode.RIGHT)) {
+                        leftX++;
+                    }
+                    if (pressedKeys.contains(KeyCode.LEFT)) {
+                        leftX--;
+                    }
+                    if (pressedKeys.contains(KeyCode.UP)) {
+                        bottomY++;
+                    }
+                    if (pressedKeys.contains(KeyCode.DOWN)) {
+                        bottomY--;
+                    }
+                }
+
             }
         }
         player.loop(world, dt);
@@ -268,7 +287,7 @@ public class Game {
             }
         }
 
-        boolean isCameraMoved = moveCameraAccordingToPlayer(width, height);
+        boolean isCameraMoved = DEBUG_FREE_CAMERA_MOVING || moveCameraAccordingToPlayer(width, height);
 
         entityCtx.clearRect(0, 0, width, height);
 
