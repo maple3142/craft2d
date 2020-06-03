@@ -27,9 +27,10 @@ public class World {
             for (int y = stoneTop + 1; y < dirtTop[x]; y++) {
                 world.blocks[y][x] = new Dirt();
             }
-            for (int y = 0; y <= stoneTop; y++) {
+            for (int y = 1; y <= stoneTop; y++) {
                 world.blocks[y][x] = new Stone();
             }
+            world.blocks[0][x] = new Bedrock();
             world.blocks[dirtTop[x]][x] = new Grass();
             if (treeThreshold[x] >= 4.5 && x - lastTreeX >= 3) {
                 int treeHeight = (int) treeThreshold[x];

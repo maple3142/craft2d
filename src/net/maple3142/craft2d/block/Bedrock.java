@@ -4,10 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
-import net.maple3142.craft2d.item.block.CobblestoneBlock;
 
-public class Stone implements Block {
-    public static Image image = new Image(Stone.class.getResource("/block/stone.png").toString());
+public class Bedrock implements Block {
+    public static Image image = new Image(Bedrock.class.getResource("/block/bedrock.png").toString());
 
     @Override
     public Image getImage() {
@@ -21,11 +20,11 @@ public class Stone implements Block {
 
     @Override
     public double getHardness() {
-        return 3;
+        return 1000000;
     }
 
     @Override
     public ItemStack getDroppedItem(Tool brokeBy) {
-        return new ItemStack(new CobblestoneBlock());
+        return null;
     }
 }

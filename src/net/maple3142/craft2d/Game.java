@@ -22,11 +22,9 @@ import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
 import net.maple3142.craft2d.item.block.*;
-import net.maple3142.craft2d.item.ingredient.Stick;
 import net.maple3142.craft2d.item.tool.WoodAxe;
 import net.maple3142.craft2d.item.tool.WoodPickaxe;
 import net.maple3142.craft2d.item.tool.WoodShovel;
-import net.maple3142.craft2d.item.tool.WoodSword;
 import net.maple3142.craft2d.ui.BlockBreaking;
 import net.maple3142.craft2d.ui.UiOpenable;
 import net.maple3142.craft2d.utils.Vector2;
@@ -134,10 +132,10 @@ public class Game {
         lastTimeMs = (int) (System.nanoTime() / 1000000);
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new ChestBlock());
-        player.inventory.storage[1] = new ItemStack(new DirtBlock(), 39);
-        player.inventory.storage[2] = new ItemStack(new WoodSword());
-        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+        player.inventory.storage[0] = new ItemStack(new CoalOreBlock());
+        player.inventory.storage[1] = new ItemStack(new IronOreBlock());
+        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock());
+        player.inventory.storage[3] = new ItemStack(new BedrockBlock());
         player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
         player.inventory.storage[5] = new ItemStack(new WoodShovel());
         player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
