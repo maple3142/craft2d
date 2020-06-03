@@ -6,7 +6,7 @@ import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.item.block.StoneBlock;
 
-public class Cobblestone implements BreakableBlock {
+public class Cobblestone implements BreakableBlock, StoneLike {
     public static Image image = new Image(Cobblestone.class.getResource("/block/cobblestone.png").toString());
 
     @Override

@@ -6,7 +6,7 @@ import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.item.block.IronOreBlock;
 
-public class IronOre implements BreakableBlock {
+public class IronOre implements BreakableBlock, StoneLike {
     public static Image image = new Image(IronOre.class.getResource("/block/iron_ore.png").toString());
 
     @Override

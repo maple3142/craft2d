@@ -2,7 +2,7 @@ package net.maple3142.craft2d.item.tool;
 
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.block.Block;
-import net.maple3142.craft2d.block.Stone;
+import net.maple3142.craft2d.block.StoneLike;
 import net.maple3142.craft2d.crafting.Recipe;
 import net.maple3142.craft2d.crafting.SimpleRecipe;
 import net.maple3142.craft2d.item.Breakable;
@@ -55,7 +55,7 @@ public class WoodPickaxe implements Item, Breakable, Tool {
     @Override
     public double getHardnessMultiplier(Block target) {
         var clz = target.getClass();
-        if (clz == Stone.class) {
+        if (StoneLike.class.isAssignableFrom(clz)) {
             return 0.5;
         }
         return 1;
