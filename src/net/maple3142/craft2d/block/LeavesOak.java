@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 
-public class LeavesOak implements Block, Wooden {
+public class LeavesOak implements BreakableBlock, Wooden {
     public static Image image = new Image(LeavesOak.class.getResource("/block/leaves_oak.png").toString());
 
     @Override

@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import net.maple3142.craft2d.BreakingTimeCalculator;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.block.BreakableBlock;
 import net.maple3142.craft2d.item.ItemStack;
 
 public class BlockBreaking {
@@ -25,6 +26,7 @@ public class BlockBreaking {
     }
 
     public void drawProgressBar(GraphicsContext ctx, MouseTracker mouse, double percent) {
+
         double x = mouse.getX() - width / 2;
         double y = mouse.getY() - bottomPadding - height;
 
@@ -40,12 +42,14 @@ public class BlockBreaking {
     }
 
     public void startBreaking(int x, int y) {
+        var blk = game.world.blocks[y][x];
+        if (!(blk instanceof BreakableBlock)) return;
         isBreaking = true;
         startBreakingTime = (int) (System.nanoTime() / 1000000);
         currentBreakingX = x;
         currentBreakingY = y;
         var tool = game.player.inventory.getSelectedTool();
-        var time = BreakingTimeCalculator.calculate(tool, game.world.blocks[currentBreakingY][currentBreakingX]);
+        var time = BreakingTimeCalculator.calculate(tool, (BreakableBlock) blk);
         endBreakingTime = startBreakingTime + time;
     }
 
@@ -53,10 +57,10 @@ public class BlockBreaking {
         // returns dropped item stack if exists
         if (success) {
             var blk = game.world.blocks[currentBreakingY][currentBreakingX];
-            if (blk != null) {
+            if (blk instanceof BreakableBlock) {
                 game.world.blocks[currentBreakingY][currentBreakingX] = null;
                 var tool = game.player.inventory.getSelectedTool();
-                return blk.getDroppedItem(tool);
+                return ((BreakableBlock) blk).getDroppedItem(tool);
             }
         }
         isBreaking = false;

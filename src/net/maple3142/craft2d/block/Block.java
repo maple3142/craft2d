@@ -9,8 +9,4 @@ public interface Block {
     Image getImage();
 
     void draw(GraphicsContext ctx, int x, int y, int width, int height);
-
-    double getHardness();
-
-    ItemStack getDroppedItem(Tool brokeBy);
 }

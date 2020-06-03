@@ -8,7 +8,7 @@ import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.item.block.CraftingTableBlock;
 import net.maple3142.craft2d.ui.crafting.CraftingTableUi;
 
-public class CraftingTable implements Block, Interactable, Wooden {
+public class CraftingTable implements BreakableBlock, Interactable, Wooden {
     public static Image image = new Image(CraftingTable.class.getResource("/block/crafting_table.png").toString());
 
     @Override

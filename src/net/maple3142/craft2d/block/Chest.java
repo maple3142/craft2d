@@ -8,7 +8,7 @@ import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.item.block.ChestBlock;
 import net.maple3142.craft2d.ui.storage.ChestUi;
 
-public class Chest implements Block, Interactable, Wooden {
+public class Chest implements BreakableBlock, Interactable, Wooden {
 
     public static Image image = new Image(Chest.class.getResource("/block/chest.png").toString());
     private final ItemStack[] storage = new ItemStack[27];

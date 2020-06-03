@@ -6,7 +6,7 @@ import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.Tool;
 import net.maple3142.craft2d.item.block.DirtBlock;
 
-public class Grass implements Block {
+public class Grass implements BreakableBlock {
     public static Image image = new Image(Grass.class.getResource("/block/grass.png").toString());
 
     @Override
