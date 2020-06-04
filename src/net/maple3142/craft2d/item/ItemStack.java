@@ -16,11 +16,14 @@ public class ItemStack {
     }
 
     public void addItemsNum(int num) {
+        if (!isStackable()) return;
         numItems += num;
+        if (numItems > ItemStack.maxItems) numItems = ItemStack.maxItems;
     }
 
     public void removeItemsNum(int num) {
         numItems -= num;
+        if (numItems < 0) numItems = 0;
     }
 
     public int getItemsNum() {

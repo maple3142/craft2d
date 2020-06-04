@@ -6,6 +6,7 @@ import net.maple3142.craft2d.BreakingTimeCalculator;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.block.BreakableBlock;
+import net.maple3142.craft2d.block.Loopable;
 import net.maple3142.craft2d.item.ItemStack;
 
 public class BlockBreaking {
@@ -58,6 +59,9 @@ public class BlockBreaking {
         if (success) {
             var blk = game.world.blocks[currentBreakingY][currentBreakingX];
             if (blk instanceof BreakableBlock) {
+                if (blk instanceof Loopable) {
+                    game.loopables.remove(blk);
+                }
                 game.world.blocks[currentBreakingY][currentBreakingX] = null;
                 var tool = game.player.inventory.getSelectedTool();
                 return ((BreakableBlock) blk).getDroppedItem(tool);

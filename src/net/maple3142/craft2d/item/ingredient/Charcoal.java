@@ -5,11 +5,11 @@ import net.maple3142.craft2d.item.Fuel;
 import net.maple3142.craft2d.item.Item;
 import net.maple3142.craft2d.item.Stackable;
 
-public class Coal implements Item, Stackable, Fuel {
+public class Charcoal implements Item, Stackable, Fuel {
 
-    public static final int id = 15;
+    public static final int id = 22;
 
-    private final Image img = new Image(Coal.class.getResource("/item/coal.png").toString());
+    private final Image img = new Image(Charcoal.class.getResource("/item/charcoal.png").toString());
 
     @Override
     public int getId() {
@@ -23,11 +23,11 @@ public class Coal implements Item, Stackable, Fuel {
 
     @Override
     public boolean equals(Item item) {
-        return item instanceof Coal;
+        return item instanceof Charcoal;
     }
 
     @Override
     public double getEnergyUnit() {
-        return 8;
+        return 8.0;
     }
 }

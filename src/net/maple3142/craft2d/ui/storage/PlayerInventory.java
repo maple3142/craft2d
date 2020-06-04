@@ -189,34 +189,6 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
         return -1;
     }
 
-    private void handleResultBlock(ItemStack[] craftingArea, MouseEvent event) {
-        int resultId = craftingArea.length - 1;
-        if (craftingArea[resultId] == null) return;
-        int maxItems = craftingArea[resultId].isStackable() ? ItemStack.maxItems : 1;
-        if (draggedStack == null ||
-                (craftingArea[resultId].getItem().equals(draggedStack.getItem()) && craftingArea[resultId].getItemsNum() + draggedStack.getItemsNum() <= maxItems)) {
-            if (event.isPrimaryButtonDown() || event.isSecondaryButtonDown()) {
-                if (draggedStack == null) {
-                    draggedStack = craftingArea[resultId];
-                } else {
-                    draggedStack.addItemsNum(craftingArea[resultId].getItemsNum());
-                }
-                craftingArea[resultId] = null;
-
-                // remove 1 items from crafting panel
-                for (int i = 0; i < craftingArea.length - 1; i++) {
-                    if (craftingArea[i] != null) {
-                        if (craftingArea[i].getItemsNum() == 1) {
-                            craftingArea[i] = null;
-                        } else {
-                            craftingArea[i].removeItemsNum(1);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public int calculateIdFromRelativePosition(double x, double y) {
         if (x < 0 || y < 0 || x > inventoryWidth || y > inventoryHeight) return -2;
         int row = -1, col = -1;

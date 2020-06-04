@@ -2,13 +2,11 @@ package net.maple3142.craft2d.item.block;
 
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.block.Block;
-import net.maple3142.craft2d.block.CoalOre;
 import net.maple3142.craft2d.block.IronOre;
-import net.maple3142.craft2d.item.Item;
-import net.maple3142.craft2d.item.PlaceableItem;
-import net.maple3142.craft2d.item.Stackable;
+import net.maple3142.craft2d.item.*;
+import net.maple3142.craft2d.item.ingredient.IronIngot;
 
-public class IronOreBlock implements PlaceableItem, Stackable {
+public class IronOreBlock implements PlaceableItem, Stackable, Burnable {
 
     public static final int id = 16;
 
@@ -32,5 +30,17 @@ public class IronOreBlock implements PlaceableItem, Stackable {
     @Override
     public boolean equals(Item item) {
         return item instanceof IronOreBlock;
+    }
+
+    @Override
+    public ItemStack getResultItemStack() {
+        return new ItemStack(new IronIngot());
+    }
+
+    @Override
+    public boolean isTargetCompatible(ItemStack stk) {
+        if (stk == null) return true;
+        if (!stk.isStackable()) return false;
+        return stk.getItemsNum() + 1 < ItemStack.maxItems && stk.getItem().getId() == IronIngot.id;
     }
 }

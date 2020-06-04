@@ -16,15 +16,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import net.maple3142.craft2d.block.Interactable;
+import net.maple3142.craft2d.block.Loopable;
 import net.maple3142.craft2d.entity.Entity;
 import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.entity.Player;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
 import net.maple3142.craft2d.item.block.*;
+import net.maple3142.craft2d.item.ingredient.Coal;
 import net.maple3142.craft2d.item.ingredient.Stick;
 import net.maple3142.craft2d.item.tool.WoodAxe;
-import net.maple3142.craft2d.item.tool.WoodPickaxe;
 import net.maple3142.craft2d.item.tool.WoodShovel;
 import net.maple3142.craft2d.ui.BlockBreaking;
 import net.maple3142.craft2d.ui.UiOpenable;
@@ -68,6 +69,7 @@ public class Game {
     private int lastTimeMs;
 
     public Set<Entity> entities = new HashSet<>();
+    public Set<Loopable> loopables = new HashSet<>();
 
     private final Image sun = new Image(getClass().getResource("/background/sun.png").toString());
     private final Set<KeyCode> pressedKeys = new HashSet<>();
@@ -137,11 +139,11 @@ public class Game {
         moveCameraAccordingToPlayer((int) widthProperty.get(), (int) heightProperty.get());
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new CoalOreBlock());
-        player.inventory.storage[1] = new ItemStack(new IronOreBlock());
+        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
+        player.inventory.storage[1] = new ItemStack(new IronOreBlock(), 64);
         player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
         player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-        player.inventory.storage[4] = new ItemStack(new WoodPickaxe());
+        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
         player.inventory.storage[5] = new ItemStack(new WoodShovel());
         player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
         player.inventory.storage[7] = new ItemStack(new WoodAxe());
@@ -234,7 +236,11 @@ public class Game {
                 if (stk != null && world.blocks[by][bx] == null) {
                     var item = stk.getItem();
                     if (item instanceof PlaceableItem) {
-                        world.blocks[by][bx] = ((PlaceableItem) item).getPlacedBlock();
+                        var blk = ((PlaceableItem) item).getPlacedBlock();
+                        world.blocks[by][bx] = blk;
+                        if (blk instanceof Loopable) {
+                            loopables.add((Loopable) blk);
+                        }
                         if (stk.getItemsNum() == 1) player.inventory.setSelectedItemStack(null);
                         else stk.removeItemsNum(1);
                     }
@@ -286,6 +292,10 @@ public class Game {
                     entIt.remove();
                 }
             }
+        }
+
+        for (var l : loopables) {
+            l.loop(dt);
         }
 
         boolean isCameraMoved = DEBUG_FREE_CAMERA_MOVING || moveCameraAccordingToPlayer(width, height);

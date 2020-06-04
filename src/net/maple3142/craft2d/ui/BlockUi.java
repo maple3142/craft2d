@@ -49,6 +49,51 @@ public abstract class BlockUi implements UiOpenable {
         ctx.drawImage(image, x + pw, y + ph, rw, rh);
     }
 
+    protected void fillRowItems(ItemStack[] storage, GraphicsContext ctx, double x, double y, int idOffset, int size, int borderWidth) {
+        double startX = x + borderWidth;
+        for (int i = 0; i <= 8; i++) {
+            int id = i + idOffset;
+            if (storage[id] != null) {
+                var item = storage[id].getItem();
+                drawImagePercentageCenter(ctx, item.getImage(), startX, y + borderWidth, size, size, 0.75);
+                int num = storage[id].getItemsNum();
+                if (num > 1) {
+                    ctx.setTextAlign(TextAlignment.RIGHT);
+                    ctx.setTextBaseline(VPos.BOTTOM);
+                    ctx.setFill(Color.WHITE);
+                    ctx.fillText(String.valueOf(num), startX + size, y + borderWidth + size);
+                }
+            }
+            startX += (size + borderWidth);
+        }
+    }
+
+    protected void drawStackWithItem(GraphicsContext ctx, ItemStack stk, double x, double y, int size) {
+        if (stk != null) {
+            var item = stk.getItem();
+            drawImagePercentageCenter(ctx, item.getImage(), x, y, size, size, 0.75);
+            int num = stk.getItemsNum();
+            if (num > 1) {
+                ctx.setTextAlign(TextAlignment.RIGHT);
+                ctx.setTextBaseline(VPos.BOTTOM);
+                ctx.setFill(Color.WHITE);
+                ctx.fillText(String.valueOf(num), x + size, y + size);
+            }
+        }
+    }
+
+    protected boolean removeFromStorage(ItemStack[] storage, int id, int num) {
+        if (storage[id] == null) return false;
+        if (storage[id].getItemsNum() > num) {
+            storage[id].removeItemsNum(num);
+            return true;
+        } else if (storage[id].getItemsNum() == num) {
+            storage[id] = null;
+            return true;
+        }
+        return false;
+    }
+
     protected ItemStack putAllItems(ItemStack[] storage, int id, ItemStack stk) { // minecraft's left click
         // returns remaining stack
         if (stk == null) {
@@ -120,6 +165,35 @@ public abstract class BlockUi implements UiOpenable {
         var tmp = storage[id];
         storage[id] = stk;
         return tmp;
+    }
+
+    protected void handleResultBlock(ItemStack[] craftingArea, MouseEvent event) {
+        // this is for crafting result handling, need to be overloaded for other uses
+        int resultId = craftingArea.length - 1;
+        if (craftingArea[resultId] == null) return;
+        int maxItems = craftingArea[resultId].isStackable() ? ItemStack.maxItems : 1;
+        if (draggedStack == null ||
+                (craftingArea[resultId].getItem().equals(draggedStack.getItem()) && craftingArea[resultId].getItemsNum() + draggedStack.getItemsNum() <= maxItems)) {
+            if (event.isPrimaryButtonDown() || event.isSecondaryButtonDown()) {
+                if (draggedStack == null) {
+                    draggedStack = craftingArea[resultId];
+                } else {
+                    draggedStack.addItemsNum(craftingArea[resultId].getItemsNum());
+                }
+                craftingArea[resultId] = null;
+
+                // remove 1 items from crafting panel
+                for (int i = 0; i < craftingArea.length - 1; i++) {
+                    if (craftingArea[i] != null) {
+                        if (craftingArea[i].getItemsNum() == 1) {
+                            craftingArea[i] = null;
+                        } else {
+                            craftingArea[i].removeItemsNum(1);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void handleMousePressedRelativeCoordinates(MouseEvent event, double x, double y, Game game) {
