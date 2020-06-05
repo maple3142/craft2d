@@ -188,6 +188,26 @@ public class Game {
         return anyChanged;
     }
 
+    private boolean isInRange(double x, double y) {
+        int height = (int) heightProperty.get();
+        double topY = bottomY + (double) (height / blockHeight);
+        double pX = (player.position.x - leftX) * Game.blockWidth;
+        double pY = (topY - player.position.y) * Game.blockHeight;
+        double dx = x - pX;
+        double dy = y - pY;
+        double dist = Math.sqrt(dx * dx + dy * dy);
+        return dist <= mouseRange * blockWidth;
+    }
+
+    private int getBx(double x) {
+        return (int) (leftX + x / blockWidth);
+    }
+
+    private int getBy(double y) {
+        int height = (int) heightProperty.get();
+        return (int) (bottomY + (double) (height / blockHeight) - (y / blockHeight)); // don't change it to (height - y) / blockHeight
+    }
+
     private void loop(long time) {
         int timeMs = (int) (time / 1000000);
         int dt = timeMs - lastTimeMs;
@@ -211,44 +231,20 @@ public class Game {
         {
             double x = mouseTracker.getX();
             double y = mouseTracker.getY();
-            int bx = (int) (leftX + x / blockWidth);
-            int by = (int) (bottomY + (double) (height / blockHeight) - (y / blockHeight)); // don't change it to (height - y) / blockHeight
-
-            double pX = (player.position.x - leftX) * Game.blockWidth;
-            double pY = (topY - player.position.y) * Game.blockHeight;
-            double dx = x - pX;
-            double dy = y - pY;
-            double dist = Math.sqrt(dx * dx + dy * dy);
-            boolean isInRange = dist <= mouseRange * blockWidth;
+            int bx = getBx(x);
+            int by = getBy(y);
+            boolean inRange = isInRange(x, y);
 
             if (mouseTracker.isPrimaryPressed()) {
                 if (blockBreaking.isBreaking) {
-                    if ((bx != blockBreaking.currentBreakingX || by != blockBreaking.currentBreakingY) || !isInRange) {
+                    if ((bx != blockBreaking.currentBreakingX || by != blockBreaking.currentBreakingY) || !inRange) {
                         blockBreaking.endBreaking(false);
                     }
-                } else if (isInRange && world.blocks[by][bx] != null) {
+                } else if (inRange && world.blocks[by][bx] != null) {
                     blockBreaking.startBreaking(bx, by);
                 }
             } else if (blockBreaking.isBreaking) { // if mouse isn't pressed while breaking, then it is interrupted
                 blockBreaking.endBreaking(false);
-            }
-            if (mouseTracker.isSecondaryPressed() && isInRange) {
-                var stk = player.inventory.getSelectedItemStack();
-                if (stk != null && world.blocks[by][bx] == null) {
-                    var item = stk.getItem();
-                    if (item instanceof PlaceableItem) {
-                        var blk = ((PlaceableItem) item).getPlacedBlock();
-                        world.blocks[by][bx] = blk;
-                        if (blk instanceof Loopable) {
-                            loopables.add((Loopable) blk);
-                        }
-                        if (stk.getItemsNum() == 1) player.inventory.setSelectedItemStack(null);
-                        else stk.removeItemsNum(1);
-                    }
-                } else if (world.blocks[by][bx] instanceof Interactable) {
-                    var blk = (Interactable) (world.blocks[by][bx]);
-                    blk.onInteracted(this);
-                }
             }
 
         }
@@ -408,6 +404,31 @@ public class Game {
     public void onMousePressed(MouseEvent event) {
         if (currentUi != null) {
             currentUi.handleMousePressed(event, widthProperty.get(), heightProperty.get(), this);
+        } else {
+            double x = event.getX();
+            double y = event.getY();
+            int bx = getBx(x);
+            int by = getBy(y);
+            boolean inRange = isInRange(x, y);
+
+            if (event.isSecondaryButtonDown() && inRange) {
+                var stk = player.inventory.getSelectedItemStack();
+                if (stk != null && world.blocks[by][bx] == null) {
+                    var item = stk.getItem();
+                    if (item instanceof PlaceableItem) {
+                        var blk = ((PlaceableItem) item).getPlacedBlock();
+                        world.blocks[by][bx] = blk;
+                        if (blk instanceof Loopable) {
+                            loopables.add((Loopable) blk);
+                        }
+                        if (stk.getItemsNum() == 1) player.inventory.setSelectedItemStack(null);
+                        else stk.removeItemsNum(1);
+                    }
+                } else if (world.blocks[by][bx] instanceof Interactable) {
+                    var blk = (Interactable) (world.blocks[by][bx]);
+                    blk.onInteracted(this);
+                }
+            }
         }
     }
 
