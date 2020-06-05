@@ -53,17 +53,7 @@ public abstract class BlockUi implements UiOpenable {
         double startX = x + borderWidth;
         for (int i = 0; i <= 8; i++) {
             int id = i + idOffset;
-            if (storage[id] != null) {
-                var item = storage[id].getItem();
-                drawImagePercentageCenter(ctx, item.getImage(), startX, y + borderWidth, size, size, 0.75);
-                int num = storage[id].getItemsNum();
-                if (num > 1) {
-                    ctx.setTextAlign(TextAlignment.RIGHT);
-                    ctx.setTextBaseline(VPos.BOTTOM);
-                    ctx.setFill(Color.WHITE);
-                    ctx.fillText(String.valueOf(num), startX + size, y + borderWidth + size);
-                }
-            }
+            drawStackWithItem(ctx, storage[id], startX, y + borderWidth, size);
             startX += (size + borderWidth);
         }
     }

@@ -1,11 +1,8 @@
 package net.maple3142.craft2d.ui.storage;
 
-import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.item.ItemStack;
@@ -24,25 +21,6 @@ public class ChestUi extends BlockUi implements UiOpenable {
         this.storage = storage;
     }
 
-    private void fillRowItems(ItemStack[] storage, GraphicsContext ctx, double x, double y, int idOffset) {
-        double startX = x + itemBorderWidth;
-        for (int i = 0; i <= 8; i++) {
-            int id = i + idOffset;
-            if (storage[id] != null) {
-                var item = storage[id].getItem();
-                drawImagePercentageCenter(ctx, item.getImage(), startX, y + itemBorderWidth, itemDefaultSize, itemDefaultSize, 0.75);
-                int num = storage[id].getItemsNum();
-                if (num > 1) {
-                    ctx.setTextAlign(TextAlignment.RIGHT);
-                    ctx.setTextBaseline(VPos.BOTTOM);
-                    ctx.setFill(Color.WHITE);
-                    ctx.fillText(String.valueOf(num), startX + itemDefaultSize, y + itemBorderWidth + itemDefaultSize);
-                }
-            }
-            startX += (itemDefaultSize + itemBorderWidth);
-        }
-    }
-
     @Override
     public void drawUi(GraphicsContext ctx, MouseTracker mouse, double gameWidth, double gameHeight, Game game) {
         var player = game.player;
@@ -50,15 +28,15 @@ public class ChestUi extends BlockUi implements UiOpenable {
         double cY = (gameHeight - height) / 2;
         ctx.drawImage(img, cX, cY, width, height);
 
-        fillRowItems(storage, ctx, cX + 12, cY + 28, 0);
-        fillRowItems(storage, ctx, cX + 12, cY + 64, 9);
-        fillRowItems(storage, ctx, cX + 12, cY + 100, 18);
+        fillRowItems(storage, ctx, cX + 12, cY + 28, 0, itemDefaultSize, itemBorderWidth);
+        fillRowItems(storage, ctx, cX + 12, cY + 64, 9, itemDefaultSize, itemBorderWidth);
+        fillRowItems(storage, ctx, cX + 12, cY + 100, 18, itemDefaultSize, itemBorderWidth);
 
         {
-            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 280, 0); // the last row
-            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 164, 9);
-            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 200, 18);
-            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 236, 27);
+            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 280, 0, itemDefaultSize, itemBorderWidth); // the last row
+            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 164, 9, itemDefaultSize, itemBorderWidth);
+            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 200, 18, itemDefaultSize, itemBorderWidth);
+            fillRowItems(player.inventory.storage, ctx, cX + 12, cY + 236, 27, itemDefaultSize, itemBorderWidth);
         }
 
         drawDraggedStack(ctx, mouse, itemDefaultSize);
