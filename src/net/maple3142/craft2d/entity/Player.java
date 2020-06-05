@@ -110,7 +110,7 @@ public class Player implements Entity {
 
     public void jump() {
         if (velocity.y == 0 && !bottomIsEmpty()) {
-            velocity.y += 0.0141; // v=sqrt(2gh)
+            velocity.y += 0.02; // v=sqrt(2gh)
         }
     }
 
