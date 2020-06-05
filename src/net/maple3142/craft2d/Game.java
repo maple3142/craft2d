@@ -264,6 +264,9 @@ public class Game {
                 if (pressedKeys.contains(KeyCode.W) || pressedKeys.contains(KeyCode.SPACE)) {
                     player.jump();
                 }
+                if (pressedKeys.contains(KeyCode.S)) {
+                    player.faceFront();
+                }
                 if (DEBUG_FREE_CAMERA_MOVING) {
                     if (pressedKeys.contains(KeyCode.RIGHT)) {
                         leftX++;

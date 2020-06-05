@@ -8,13 +8,17 @@ import net.maple3142.craft2d.ui.storage.PlayerInventory;
 import net.maple3142.craft2d.utils.Vector2;
 
 public class Player implements Entity {
-    private static final Image steve = new Image(Player.class.getResource("/entity/steve_front.png").toString());
-    public Vector2 position; // (x, y) represents left bottom of the entity
-    public PlayerInventory inventory = new PlayerInventory();
+    private static final Image imgFront = new Image(Player.class.getResource("/entity/steve_front.png").toString());
+    private static final Image imgLeft = new Image(Player.class.getResource("/entity/steve_left.png").toString());
+    private static final Image imgRight = new Image(Player.class.getResource("/entity/steve_right.png").toString());
     private final int entityWidth = 1;
     private final int entityHeight = 2;
     private final Vector2 velocity = new Vector2();
     private final World world;
+
+    public Vector2 position; // (x, y) represents left bottom of the entity
+    public PlayerInventory inventory = new PlayerInventory();
+    public PlayerFacing facing = PlayerFacing.FRONT;
 
     public Player(World world, double x, double y) {
         position = new Vector2(x, y);
@@ -47,7 +51,20 @@ public class Player implements Entity {
     public void draw(GraphicsContext ctx, double leftX, double topY) {
         int pX = (int) ((position.x - 0.5 - leftX) * Game.blockWidth);
         int pY = (int) ((topY - (position.y + 1)) * Game.blockHeight);
-        ctx.drawImage(steve, pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
+
+        Image img = null;
+        switch (facing) {
+            case FRONT:
+                img = imgFront;
+                break;
+            case LEFT:
+                img = imgLeft;
+                break;
+            case RIGHT:
+                img = imgRight;
+                break;
+        }
+        ctx.drawImage(img, pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
     }
 
     @Override
@@ -71,13 +88,19 @@ public class Player implements Entity {
         return world.getPos(position.x - 0.5, position.y - 1) == null && world.getPos(position.x - 0.5, position.y) == null;
     }
 
+    public void faceFront() {
+        facing = PlayerFacing.FRONT;
+    }
+
     public void moveRight() {
+        facing = PlayerFacing.RIGHT;
         if (canGoRight()) {
             velocity.x += 0.0005;
         }
     }
 
     public void moveLeft() {
+        facing = PlayerFacing.LEFT;
         if (canGoLeft()) {
             velocity.x -= 0.0005;
         }

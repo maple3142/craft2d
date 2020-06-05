@@ -9,6 +9,7 @@ import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.entity.FloatingItem;
+import net.maple3142.craft2d.entity.PlayerFacing;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.utils.Vector2;
 
@@ -210,8 +211,8 @@ public abstract class BlockUi implements UiOpenable {
     public void dropDraggedStack(Game game) {
         if (draggedStack != null) {
             var pos = game.player.position;
-            // TODO: change this according to player's facing
-            var newPos = new Vector2(pos.x + 2, pos.y);
+            var mul = game.player.facing == PlayerFacing.LEFT ? -1 : 1;
+            var newPos = new Vector2(pos.x + 1.5 * mul, pos.y);
             var item = new FloatingItem(draggedStack, newPos);
             game.entities.add(item);
             draggedStack = null;
