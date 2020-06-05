@@ -2,6 +2,7 @@ package net.maple3142.craft2d.entity;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.World;
 import net.maple3142.craft2d.ui.storage.PlayerInventory;
@@ -16,6 +17,7 @@ public class Player implements Entity {
     private final Vector2 velocity = new Vector2();
     private final World world;
 
+    // TODO: Introduce real acceleration calculation, or the speed may be affected by framerate
     public Vector2 position; // (x, y) represents left bottom of the entity
     public PlayerInventory inventory = new PlayerInventory();
     public PlayerFacing facing = PlayerFacing.FRONT;
@@ -65,6 +67,9 @@ public class Player implements Entity {
                 break;
         }
         ctx.drawImage(img, pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
+
+        ctx.setFill(Color.RED);
+        ctx.fillRect((position.x - leftX) * Game.blockWidth - 1, (topY - (position.y)) * Game.blockHeight - 1, 3, 3);
     }
 
     @Override
@@ -81,11 +86,11 @@ public class Player implements Entity {
     }
 
     public boolean canGoRight() {
-        return world.getPos(position.x + 0.5, position.y - 1) == null && world.getPos(position.x + 0.5, position.y) == null;
+        return world.getPos(position.x + 0.5, position.y - 0.1) == null && world.getPos(position.x + 0.5, position.y) == null;
     }
 
     public boolean canGoLeft() {
-        return world.getPos(position.x - 0.5, position.y - 1) == null && world.getPos(position.x - 0.5, position.y) == null;
+        return world.getPos(position.x - 0.5, position.y - 0.1) == null && world.getPos(position.x - 0.5, position.y) == null;
     }
 
     public void faceFront() {
@@ -95,20 +100,20 @@ public class Player implements Entity {
     public void moveRight() {
         facing = PlayerFacing.RIGHT;
         if (canGoRight()) {
-            velocity.x += 0.0005;
+            velocity.x += 0.0007;
         }
     }
 
     public void moveLeft() {
         facing = PlayerFacing.LEFT;
         if (canGoLeft()) {
-            velocity.x -= 0.0005;
+            velocity.x -= 0.0007;
         }
     }
 
     public void jump() {
         if (velocity.y == 0 && !bottomIsEmpty()) {
-            velocity.y += 0.03;
+            velocity.y += 0.0141; // v=sqrt(2gh)
         }
     }
 
