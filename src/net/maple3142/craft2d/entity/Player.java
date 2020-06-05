@@ -67,9 +67,6 @@ public class Player implements Entity {
                 break;
         }
         ctx.drawImage(img, pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
-
-        ctx.setFill(Color.RED);
-        ctx.fillRect((position.x - leftX) * Game.blockWidth - 1, (topY - (position.y)) * Game.blockHeight - 1, 3, 3);
     }
 
     @Override
