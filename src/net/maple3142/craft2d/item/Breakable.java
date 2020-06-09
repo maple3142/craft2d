@@ -6,4 +6,10 @@ public interface Breakable {
     int getDurability();
 
     boolean isBroken();
+
+    boolean isIntact();
+
+    void reduceDurabilityByOne();
+
+    void setDurability(int d);
 }

@@ -20,7 +20,14 @@ import net.maple3142.craft2d.block.Loopable;
 import net.maple3142.craft2d.entity.Entity;
 import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.entity.Player;
+import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
+import net.maple3142.craft2d.item.block.*;
+import net.maple3142.craft2d.item.ingredient.Coal;
+import net.maple3142.craft2d.item.ingredient.IronIngot;
+import net.maple3142.craft2d.item.ingredient.Stick;
+import net.maple3142.craft2d.item.tool.WoodAxe;
+import net.maple3142.craft2d.item.tool.WoodShovel;
 import net.maple3142.craft2d.ui.BlockBreaking;
 import net.maple3142.craft2d.ui.UiOpenable;
 import net.maple3142.craft2d.utils.Vector2;
@@ -133,22 +140,24 @@ public class Game {
         moveCameraAccordingToPlayer((int) widthProperty.get(), (int) heightProperty.get());
 
         // testing inventory
-//        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
-//        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
-//        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
-//        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-//        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
-//        player.inventory.storage[5] = new ItemStack(new WoodShovel());
-//        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
-//        player.inventory.storage[7] = new ItemStack(new WoodAxe());
-//        player.inventory.storage[8] = new ItemStack(new GrassBlock(), 64);
-//        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
-//        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
-//        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
-//        player.inventory.storage[21] = new ItemStack(new StoneBlock());
-//        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
-//        player.inventory.storage[28] = new ItemStack(new StoneBlock());
-//        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
+        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
+        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
+        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
+        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
+        var s = new WoodShovel();
+        s.setDurability(2);
+        player.inventory.storage[5] = new ItemStack(s);
+        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
+        player.inventory.storage[7] = new ItemStack(new WoodAxe());
+        player.inventory.storage[8] = new ItemStack(new CraftingTableBlock(), 64);
+        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
+        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
+        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
+        player.inventory.storage[21] = new ItemStack(new StoneBlock());
+        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
+        player.inventory.storage[28] = new ItemStack(new StoneBlock());
+        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
     }
 
     public Scene getScene() {
@@ -217,6 +226,13 @@ public class Game {
                 var dropped = blockBreaking.endBreaking(true);
                 if (dropped != null) {
                     entities.add(new FloatingItem(dropped, pos));
+                }
+                var tool = player.inventory.getSelectedTool();
+                if (tool != null) {
+                    tool.reduceDurabilityByOne();
+                    if (tool.isBroken()) {
+                        player.inventory.setSelectedItemStack(null);
+                    }
                 }
             }
         }

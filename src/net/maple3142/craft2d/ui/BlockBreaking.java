@@ -56,6 +56,8 @@ public class BlockBreaking {
 
     public ItemStack endBreaking(boolean success) {
         // returns dropped item stack if exists
+        isBreaking = false;
+        endBreakingTime = 0;
         if (success) {
             var blk = game.world.blocks[currentBreakingY][currentBreakingX];
             if (blk instanceof BreakableBlock) {
@@ -67,8 +69,6 @@ public class BlockBreaking {
                 return ((BreakableBlock) blk).getDroppedItem(tool);
             }
         }
-        isBreaking = false;
-        endBreakingTime = 0;
         return null;
     }
 

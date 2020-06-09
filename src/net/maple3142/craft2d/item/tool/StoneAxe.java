@@ -13,7 +13,7 @@ import net.maple3142.craft2d.item.block.CobblestoneBlock;
 import net.maple3142.craft2d.item.block.PlankOakBlock;
 import net.maple3142.craft2d.item.ingredient.Stick;
 
-public class StoneAxe implements Item, Breakable, Tool {
+public class StoneAxe extends BasicBreakable implements Item, Tool {
 
     public static final int id = 17;
 
@@ -40,26 +40,16 @@ public class StoneAxe implements Item, Breakable, Tool {
     }
 
     @Override
-    public int getFullDurability() {
-        return 0;
-    }
-
-    @Override
-    public int getDurability() {
-        return 0;
-    }
-
-    @Override
-    public boolean isBroken() {
-        return false;
-    }
-
-    @Override
     public double getHardnessMultiplier(Block target) {
         var clz = target.getClass();
         if (Wooden.class.isAssignableFrom(clz)) { // clz implements Wooden
             return 0.5;
         }
         return 1;
+    }
+
+    @Override
+    public int getFullDurability() {
+        return 131;
     }
 }

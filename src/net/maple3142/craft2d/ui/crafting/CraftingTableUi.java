@@ -1,11 +1,8 @@
 package net.maple3142.craft2d.ui.crafting;
 
-import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.ReflectionHelper;
@@ -47,32 +44,11 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 int id = i * 3 + j;
-                if (storage[id] != null) {
-                    var item = storage[id].getItem();
-                    drawImagePercentageCenter(ctx, item.getImage(), ctX + 60 + dx * j, ctY + 34 + dx * i, itemDefaultSize, itemDefaultSize, 0.75);
-                    int num = storage[id].getItemsNum();
-                    if (num > 1) {
-                        ctx.setTextAlign(TextAlignment.RIGHT);
-                        ctx.setTextBaseline(VPos.BOTTOM);
-                        ctx.setFill(Color.WHITE);
-                        ctx.fillText(String.valueOf(num), ctX + 60 + dx * j + itemDefaultSize, ctY + 34 + dx * i + itemDefaultSize);
-                    }
-                }
+                drawStackWithItem(ctx, storage[id], ctX + 60 + dx * j, ctY + 34 + dx * i, itemDefaultSize);
             }
         }
 
-        if (storage[9] != null) {
-            var item = storage[9].getItem();
-            drawImagePercentageCenter(ctx, item.getImage(), ctX + 240, ctY + 62, 48, 48, 0.75); // result block is bigger
-            int num = storage[9].getItemsNum();
-            if (num > 1) {
-                ctx.setTextAlign(TextAlignment.RIGHT);
-                ctx.setTextBaseline(VPos.BOTTOM);
-                ctx.setFill(Color.WHITE);
-                ctx.fillText(String.valueOf(num), ctX + 240 + 48, ctY + 62 + 48);
-            }
-        }
-
+        drawStackWithItem(ctx, storage[9], ctX + 240, ctY + 62, 48); // result block is bigger
 
         {
             fillRowItems(player.inventory.storage, ctx, ctX + 12, ctY + 280, 0, itemDefaultSize, itemBorderWidth); // the last row

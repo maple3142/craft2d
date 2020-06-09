@@ -10,6 +10,7 @@ import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.MouseTracker;
 import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.entity.PlayerFacing;
+import net.maple3142.craft2d.item.Breakable;
 import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.utils.Vector2;
 
@@ -39,6 +40,9 @@ public abstract class BlockUi implements UiOpenable {
             if (num > 1) {
                 ctx.fillText(String.valueOf(num), mx + gridSize / 2, my + gridSize / 2);
             }
+            if (item instanceof Breakable) {
+                drawDurabilityBar(ctx, (Breakable) item, mx - gridSize / 2, my - gridSize / 2, (int) gridSize);
+            }
         }
     }
 
@@ -59,6 +63,22 @@ public abstract class BlockUi implements UiOpenable {
         }
     }
 
+    final int durabilityWidth = 26;
+    final int durabilityHeight = 3;
+    final int durabilityBottomPadding = 3;
+
+    protected void drawDurabilityBar(GraphicsContext ctx, Breakable b, double x, double y, int size) {
+        if (b.isIntact()) return;
+        double percent = (double) b.getDurability() / b.getFullDurability();
+        double px = x + (size - durabilityWidth) / 2.0;
+        double py = y + (size - durabilityBottomPadding - durabilityHeight);
+        ctx.setFill(Color.BLACK);
+        ctx.fillRect(px, py, durabilityWidth, durabilityHeight);
+        ctx.setFill(Color.rgb((int) (0xAA * (1 - percent)), (int) (0xAA * percent), 0x00)); // green->red
+        ctx.fillRect(px, py, durabilityWidth * percent, durabilityHeight);
+
+    }
+
     protected void drawStackWithItem(GraphicsContext ctx, ItemStack stk, double x, double y, int size) {
         if (stk != null) {
             var item = stk.getItem();
@@ -69,6 +89,9 @@ public abstract class BlockUi implements UiOpenable {
                 ctx.setTextBaseline(VPos.BOTTOM);
                 ctx.setFill(Color.WHITE);
                 ctx.fillText(String.valueOf(num), x + size, y + size);
+            }
+            if (item instanceof Breakable) {
+                drawDurabilityBar(ctx, (Breakable) item, x, y, size);
             }
         }
     }
