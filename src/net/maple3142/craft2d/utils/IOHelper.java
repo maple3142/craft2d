@@ -26,16 +26,16 @@ public class IOHelper {
         try {
             var blks = ReflectionHelper.getClasses("net.maple3142.craft2d.block");
             var blockRta = RuntimeTypeAdapterFactory.of(Block.class);
-            for (var c : blks) {
+            for (Class<?> c : blks) {
                 if (Block.class.isAssignableFrom(c)) {
-                    blockRta.registerSubtype(c);
+                    blockRta.registerSubtype(c.asSubclass(Block.class));
                 }
             }
             var items = ReflectionHelper.getClasses("net.maple3142.craft2d.item");
             var itemRta = RuntimeTypeAdapterFactory.of(Item.class);
-            for (var c : items) {
+            for (Class<?> c : items) {
                 if (Item.class.isAssignableFrom(c)) {
-                    itemRta.registerSubtype(c);
+                    itemRta.registerSubtype(c.asSubclass(Item.class));
                 }
             }
             var loopableRta = RuntimeTypeAdapterFactory.of(Loopable.class);
