@@ -63,7 +63,7 @@ public class Furnace implements BreakableBlock, Interactable, StoneLike, Loopabl
                     if (storage[1].getItemsNum() == 0) {
                         storage[1] = null;
                     }
-                    maxEnergyTime = fuel.getEnergyUnit() * Furnace.energyUnitToSeconds;
+                    maxEnergyTime = fuel.getEnergyUnit() * Furnace.energyUnitToSeconds + 0.1;
                     energyTime = maxEnergyTime;
                 }
             }
@@ -72,6 +72,26 @@ public class Furnace implements BreakableBlock, Interactable, StoneLike, Loopabl
 
     @Override
     public void loop(int dt) {
+        double lastRemainingTime = 0;
+        if (waitTime > 0 && currentTime >= waitTime) {
+            // asserts is guaranteed by start trigger
+            assert (storage[0] != null);
+            var burned = (Burnable) storage[0].getItem();
+            assert (burned.isTargetCompatible(storage[2]));
+            var result = burned.getResultItemStack();
+            if (storage[2] == null) {
+                storage[2] = result;
+            } else {
+                storage[2].addItemsNum(result.getItemsNum());
+            }
+            storage[0].removeItemsNum(1);
+            if (storage[0].getItemsNum() == 0) {
+                storage[0] = null;
+            }
+            waitTime = 0;
+            currentTime = 0;
+            lastRemainingTime = currentTime - waitTime;
+        }
         if (energyTime > 0) energyTime -= dt / 1000.0;
         if (energyTime < 0) {
             energyTime = 0;
@@ -91,29 +111,11 @@ public class Furnace implements BreakableBlock, Interactable, StoneLike, Loopabl
                     && ((Burnable) storage[0].getItem()).isTargetCompatible(storage[2])) {
                 // start trigger
                 waitTime = energyUnitToSeconds;
-                currentTime = 0;
+                currentTime = lastRemainingTime;
             }
         }
         if (waitTime > 0 && storage[0] == null) {
             // aborted
-            waitTime = 0;
-            currentTime = 0;
-        }
-        if (waitTime > 0 && currentTime > waitTime) {
-            // assets is guaranteed by start trigger
-            assert (storage[0] != null);
-            var burned = (Burnable) storage[0].getItem();
-            assert (burned.isTargetCompatible(storage[2]));
-            var result = burned.getResultItemStack();
-            if (storage[2] == null) {
-                storage[2] = result;
-            } else {
-                storage[2].addItemsNum(result.getItemsNum());
-            }
-            storage[0].removeItemsNum(1);
-            if (storage[0].getItemsNum() == 0) {
-                storage[0] = null;
-            }
             waitTime = 0;
             currentTime = 0;
         }

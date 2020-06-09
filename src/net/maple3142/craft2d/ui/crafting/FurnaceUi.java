@@ -46,12 +46,12 @@ public class FurnaceUi extends BlockUi implements UiOpenable {
         }
 
         if (furnace.waitTime > 0) {
-            final int imgWidth = 24;
-            final int width = 48;
+            final int imgWidth = 22;
+            final int width = 44;
             double percent = furnace.currentTime / furnace.waitTime;
             ctx.drawImage(imgArrow,
                     0, 0, imgWidth * percent, 17,
-                    fX + 160, fY + 70, width * percent, 34);
+                    fX + 160, fY + 70, width * percent, 32);
         }
 
         drawStackWithItem(ctx, storage[0], fX + 112, fY + 34, itemDefaultSize);
