@@ -2,9 +2,9 @@ package net.maple3142.craft2d.ui;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import net.maple3142.craft2d.BreakingTimeCalculator;
+import net.maple3142.craft2d.utils.BreakingTimeCalculator;
 import net.maple3142.craft2d.Game;
-import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.utils.MouseTracker;
 import net.maple3142.craft2d.block.BreakableBlock;
 import net.maple3142.craft2d.block.Loopable;
 import net.maple3142.craft2d.item.ItemStack;

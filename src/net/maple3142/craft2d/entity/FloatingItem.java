@@ -1,5 +1,6 @@
 package net.maple3142.craft2d.entity;
 
+import com.google.gson.annotations.Expose;
 import javafx.scene.canvas.GraphicsContext;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.World;
@@ -10,8 +11,11 @@ public class FloatingItem implements Entity {
 
     private final static double size = 0.3; // size is relative to normal block
 
+    @Expose
     public ItemStack stack;
+    @Expose
     private Vector2 position;
+    @Expose
     private Vector2 velocity = new Vector2(0, 0);
 
     public FloatingItem(ItemStack stack, Vector2 position) {

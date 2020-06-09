@@ -1,5 +1,6 @@
 package net.maple3142.craft2d;
 
+import com.google.gson.annotations.Expose;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -20,16 +21,11 @@ import net.maple3142.craft2d.block.Loopable;
 import net.maple3142.craft2d.entity.Entity;
 import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.entity.Player;
-import net.maple3142.craft2d.item.ItemStack;
 import net.maple3142.craft2d.item.PlaceableItem;
-import net.maple3142.craft2d.item.block.*;
-import net.maple3142.craft2d.item.ingredient.Coal;
-import net.maple3142.craft2d.item.ingredient.IronIngot;
-import net.maple3142.craft2d.item.ingredient.Stick;
-import net.maple3142.craft2d.item.tool.WoodAxe;
-import net.maple3142.craft2d.item.tool.WoodShovel;
 import net.maple3142.craft2d.ui.BlockBreaking;
 import net.maple3142.craft2d.ui.UiOpenable;
+import net.maple3142.craft2d.utils.Callback;
+import net.maple3142.craft2d.utils.MouseTracker;
 import net.maple3142.craft2d.utils.Vector2;
 
 import java.util.HashSet;
@@ -43,8 +39,6 @@ public class Game {
     public final static int blockHeight = 32;
     public static final int mouseRange = 6;
     public MouseTracker mouseTracker = new MouseTracker();
-    public World world = World.generateRandom(78456);
-    public Player player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
     private final DoubleProperty widthProperty = new SimpleDoubleProperty();
     private final DoubleProperty heightProperty = new SimpleDoubleProperty();
     private final Scene scene;
@@ -64,12 +58,20 @@ public class Game {
     private final GraphicsContext uiBgCtx;
     private final Canvas uiCanvas;
     private final GraphicsContext uiCtx;
-    private double leftX = world.spawnX - 10;
-    private double bottomY = World.worldHeight;
     private UiOpenable currentUi = null;
     private int lastTimeMs;
 
+    @Expose
+    public World world = World.generateRandom(78456);
+    @Expose
+    public Player player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
+    @Expose
+    private double leftX = world.spawnX - 10;
+    @Expose
+    private double bottomY = World.worldHeight;
+    @Expose
     public Set<Entity> entities = new HashSet<>();
+    @Expose
     public Set<Loopable> loopables = new HashSet<>();
 
     private final Image sun = new Image(getClass().getResource("/background/sun.png").toString());
@@ -127,8 +129,10 @@ public class Game {
         uiCanvas.widthProperty().bind(scene.widthProperty());
     }
 
+    private AnimationTimer timer;
+
     public void start() {
-        var timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 loop(l);
@@ -140,24 +144,31 @@ public class Game {
         moveCameraAccordingToPlayer((int) widthProperty.get(), (int) heightProperty.get());
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
-        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
-        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
-        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
-        var s = new WoodShovel();
-        s.setDurability(2);
-        player.inventory.storage[5] = new ItemStack(s);
-        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
-        player.inventory.storage[7] = new ItemStack(new WoodAxe());
-        player.inventory.storage[8] = new ItemStack(new CraftingTableBlock(), 64);
-        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
-        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
-        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
-        player.inventory.storage[21] = new ItemStack(new StoneBlock());
-        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
-        player.inventory.storage[28] = new ItemStack(new StoneBlock());
-        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
+//        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
+//        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
+//        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
+//        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+//        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
+//        var s = new WoodShovel();
+//        s.setDurability(2);
+//        player.inventory.storage[5] = new ItemStack(s);
+//        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
+//        player.inventory.storage[7] = new ItemStack(new WoodAxe());
+//        player.inventory.storage[8] = new ItemStack(new CraftingTableBlock(), 64);
+//        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
+//        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
+//        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
+//        player.inventory.storage[21] = new ItemStack(new StoneBlock());
+//        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
+//        player.inventory.storage[28] = new ItemStack(new StoneBlock());
+//        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
+    }
+
+    public void stop() {
+        timer.stop();
+        if (exitCallback != null) {
+            exitCallback.call();
+        }
     }
 
     public Scene getScene() {
@@ -287,7 +298,6 @@ public class Game {
                         bottomY--;
                     }
                 }
-
             }
         }
         player.loop(world, dt);
@@ -394,6 +404,10 @@ public class Game {
                 currentUi = null;
             }
         }
+
+        if (event.getCode() == KeyCode.ESCAPE) {
+            stop();
+        }
     }
 
     public void onScroll(ScrollEvent event) {
@@ -444,5 +458,11 @@ public class Game {
     public void openUi(UiOpenable ui) {
         currentUi = ui;
         currentUi.onOpened(this);
+    }
+
+    private Callback exitCallback;
+
+    public void setExitCallback(Callback f) {
+        exitCallback = f;
     }
 }

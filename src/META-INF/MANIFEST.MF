@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: net.maple3142.craft2d.Main
+

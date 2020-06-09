@@ -1,5 +1,6 @@
 package net.maple3142.craft2d.ui;
 
+import com.google.gson.annotations.Expose;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -7,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.Game;
-import net.maple3142.craft2d.MouseTracker;
+import net.maple3142.craft2d.utils.MouseTracker;
 import net.maple3142.craft2d.entity.FloatingItem;
 import net.maple3142.craft2d.entity.PlayerFacing;
 import net.maple3142.craft2d.item.Breakable;
@@ -16,7 +17,7 @@ import net.maple3142.craft2d.utils.Vector2;
 
 public abstract class BlockUi implements UiOpenable {
 
-    public ItemStack[] storage;
+    @Expose public ItemStack[] storage;
     protected ItemStack draggedStack;
 
     protected BlockUi() {

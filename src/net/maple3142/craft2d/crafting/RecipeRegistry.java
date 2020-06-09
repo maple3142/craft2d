@@ -1,6 +1,6 @@
 package net.maple3142.craft2d.crafting;
 
-import net.maple3142.craft2d.ReflectionHelper;
+import net.maple3142.craft2d.utils.ReflectionHelper;
 import net.maple3142.craft2d.item.Item;
 
 import java.util.ArrayList;

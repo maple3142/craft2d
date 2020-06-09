@@ -1,4 +1,4 @@
-package net.maple3142.craft2d;
+package net.maple3142.craft2d.utils;
 
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;

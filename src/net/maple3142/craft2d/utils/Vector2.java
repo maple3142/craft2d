@@ -1,7 +1,11 @@
 package net.maple3142.craft2d.utils;
 
+import com.google.gson.annotations.Expose;
+
 public class Vector2 {
+    @Expose
     public double x;
+    @Expose
     public double y;
 
     public Vector2() {

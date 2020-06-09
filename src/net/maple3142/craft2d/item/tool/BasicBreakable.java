@@ -1,9 +1,11 @@
 package net.maple3142.craft2d.item.tool;
 
+import com.google.gson.annotations.Expose;
 import net.maple3142.craft2d.item.Breakable;
 
 public abstract class BasicBreakable implements Breakable {
 
+    @Expose
     protected int durability = getFullDurability();
 
     @Override

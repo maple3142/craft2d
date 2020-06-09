@@ -1,5 +1,6 @@
 package net.maple3142.craft2d;
 
+import com.google.gson.annotations.Expose;
 import net.maple3142.craft2d.block.*;
 import net.maple3142.craft2d.utils.OpenSimplexNoise;
 import net.maple3142.craft2d.utils.PerlinNoise;
@@ -11,8 +12,11 @@ public class World {
     public static int worldWidth = 8192;
     public static int groundBaseLevel = 128;
     public static int groundHeightChanges = 16;
+    @Expose
     public Block[][] blocks = new Block[worldHeight][worldWidth];
+    @Expose
     public int spawnX;
+    @Expose
     public int spawnY;
 
     public static World generateRandom(long seed) {
@@ -92,6 +96,10 @@ public class World {
     }
 
     public Block getPos(double x, double y) {
+        if (y < 0) {
+            System.out.println(x + " " + y);
+            return null;
+        }
         return blocks[(int) Math.floor(y)][(int) Math.floor(x)];
     }
 }

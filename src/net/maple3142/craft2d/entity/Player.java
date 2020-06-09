@@ -1,8 +1,8 @@
 package net.maple3142.craft2d.entity;
 
+import com.google.gson.annotations.Expose;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import net.maple3142.craft2d.Game;
 import net.maple3142.craft2d.World;
 import net.maple3142.craft2d.ui.storage.PlayerInventory;
@@ -14,13 +14,18 @@ public class Player implements Entity {
     private static final Image imgRight = new Image(Player.class.getResource("/entity/steve_right.png").toString());
     private final int entityWidth = 1;
     private final int entityHeight = 2;
-    private final Vector2 velocity = new Vector2();
-    private final World world;
 
     // TODO: Introduce real acceleration calculation, or the speed may be affected by framerate
+    @Expose
     public Vector2 position; // (x, y) represents left bottom of the entity
+    @Expose
+    private Vector2 velocity = new Vector2();
+    @Expose
     public PlayerInventory inventory = new PlayerInventory();
+    @Expose
     public PlayerFacing facing = PlayerFacing.FRONT;
+
+    public World world;
 
     public Player(World world, double x, double y) {
         position = new Vector2(x, y);

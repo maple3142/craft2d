@@ -1,12 +1,13 @@
 package net.maple3142.craft2d.ui.storage;
 
+import com.google.gson.annotations.Expose;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import net.maple3142.craft2d.Game;
-import net.maple3142.craft2d.MouseTracker;
-import net.maple3142.craft2d.ReflectionHelper;
+import net.maple3142.craft2d.utils.MouseTracker;
+import net.maple3142.craft2d.utils.ReflectionHelper;
 import net.maple3142.craft2d.crafting.CraftingInput;
 import net.maple3142.craft2d.crafting.RecipeRegistry;
 import net.maple3142.craft2d.item.Item;
@@ -25,7 +26,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     private static final double inventoryHeight = 332;
     public static Image inventoryBarImg = new Image(PlayerInventory.class.getResource("/ui/inventory_bar.png").toString());
     public static Image inventoryImg = new Image(PlayerInventory.class.getResource("/ui/inventory.png").toString());
-    private int selected = 0;
+    @Expose private int selected = 0;
 
     public PlayerInventory() {
         super(36); // same layout as Minecraft survival inventory

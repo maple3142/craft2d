@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="craft2d">
+    <output-path>$PROJECT_DIR$/out/artifacts/craft2d</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="net.maple3142.craft2d.Main" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="craft2d.jar">
+        <element id="module-output" name="craft2d" />
+      </element>
+    </root>
+  </artifact>
+</component>

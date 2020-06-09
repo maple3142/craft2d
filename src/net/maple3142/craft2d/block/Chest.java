@@ -1,5 +1,6 @@
 package net.maple3142.craft2d.block;
 
+import com.google.gson.annotations.Expose;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.Game;
@@ -11,6 +12,7 @@ import net.maple3142.craft2d.ui.storage.ChestUi;
 public class Chest implements BreakableBlock, Interactable, Wooden {
 
     public static Image image = new Image(Chest.class.getResource("/block/chest.png").toString());
+    @Expose
     private final ItemStack[] storage = new ItemStack[27];
 
     @Override

@@ -1,5 +1,6 @@
 package net.maple3142.craft2d.block;
 
+import com.google.gson.annotations.Expose;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import net.maple3142.craft2d.Game;
@@ -18,6 +19,7 @@ public class Furnace implements BreakableBlock, Interactable, StoneLike, Loopabl
 
     public static int energyUnitToSeconds = 10; // 1 E.U. = 10 s
 
+    @Expose
     public ItemStack[] storage = new ItemStack[3]; // 0=to be burned,1=fuel,2=result
 
     @Override

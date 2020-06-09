@@ -1,9 +1,11 @@
 package net.maple3142.craft2d.item;
 
+import com.google.gson.annotations.Expose;
+
 public class ItemStack {
     public static int maxItems = 64;
-    private int numItems;
-    private final Item item;
+    @Expose private int numItems;
+    @Expose private final Item item;
 
     public ItemStack(Item item) {
         this.item = item;
