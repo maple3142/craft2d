@@ -8,12 +8,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import net.maple3142.craft2d.Game;
-import net.maple3142.craft2d.utils.IOHelper;
+import net.maple3142.craft2d.game.Game;
+import net.maple3142.craft2d.game.utils.IOHelper;
 
 public class WelcomeScreen {
 
-    private Scene scene;
+    private final Scene scene;
 
     public WelcomeScreen(Stage stage) {
         var root = new VBox();

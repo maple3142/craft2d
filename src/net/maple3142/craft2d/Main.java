@@ -7,12 +7,12 @@ import net.maple3142.craft2d.welcome.WelcomeScreen;
 
 public class Main extends Application {
 
+    final int minHeight = 768;
+    final int minWidth = 1024;
+
     public static void main(String[] args) {
         launch(args);
     }
-
-    final int minHeight = 768;
-    final int minWidth = 1024;
 
     @Override
     public void start(Stage stage) {
