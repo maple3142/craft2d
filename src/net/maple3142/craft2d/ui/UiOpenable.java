@@ -14,3 +14,4 @@ public interface UiOpenable {
 
     void handleMousePressed(MouseEvent event, double gameWidth, double gameHeight, Game game);
 }
+
