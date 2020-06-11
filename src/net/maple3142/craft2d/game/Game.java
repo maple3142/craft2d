@@ -55,6 +55,7 @@ public class Game {
     private final GraphicsContext uiBgCtx;
     private final Canvas uiCanvas;
     private final GraphicsContext uiCtx;
+    private final Music music = new Music();
     private final Image sun = new Image(getClass().getResource("/background/sun.png").toString());
     private final Set<KeyCode> pressedKeys = new HashSet<>();
     private final BlockBreaking blockBreaking = new BlockBreaking(this);
@@ -128,6 +129,7 @@ public class Game {
     }
 
     public void start() {
+        music.playNext();
         timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -161,6 +163,7 @@ public class Game {
     }
 
     public void stop() {
+        music.stop();
         timer.stop();
         if (exitCallback != null) {
             exitCallback.call();
