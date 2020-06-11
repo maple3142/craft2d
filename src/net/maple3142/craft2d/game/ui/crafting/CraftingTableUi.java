@@ -40,6 +40,9 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
         double ctY = (gameHeight - height) / 2;
         ctx.drawImage(img, ctX, ctY, width, height);
 
+        fillText(ctx, "Crafting", ctX + 56, ctY + 8);
+        fillText(ctx, "Inventory", ctX + 14, ctY + 142);
+
         double dx = itemDefaultSize + itemBorderWidth;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {

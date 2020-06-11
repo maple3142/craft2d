@@ -1,6 +1,7 @@
 package net.maple3142.craft2d.welcome;
 
 import javafx.scene.control.Button;
+import net.maple3142.craft2d.game.FontProvider;
 
 public class MinecraftButton extends Button {
 

@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import net.maple3142.craft2d.game.FontProvider;
 import net.maple3142.craft2d.game.Game;
 import net.maple3142.craft2d.game.entity.FloatingItem;
 import net.maple3142.craft2d.game.entity.PlayerFacing;
@@ -29,6 +30,14 @@ public abstract class BlockUi implements UiOpenable {
 
     protected BlockUi(int storageSize) {
         storage = new ItemStack[storageSize];
+    }
+
+    protected void fillText(GraphicsContext ctx, String str, double x, double y) {
+        ctx.setFont(FontProvider.minecraftFontBig);
+        ctx.setFill(Color.web("44464B"));
+        ctx.setTextAlign(TextAlignment.LEFT);
+        ctx.setTextBaseline(VPos.TOP);
+        ctx.fillText(str, x, y);
     }
 
     protected void drawDraggedStack(GraphicsContext ctx, MouseTracker mouse, double gridSize) {
@@ -86,6 +95,7 @@ public abstract class BlockUi implements UiOpenable {
             drawImagePercentageCenter(ctx, item.getImage(), x, y, size, size, 0.75);
             int num = stk.getItemsNum();
             if (num > 1) {
+                ctx.setFont(FontProvider.minecraftFontNormal);
                 ctx.setTextAlign(TextAlignment.RIGHT);
                 ctx.setTextBaseline(VPos.BOTTOM);
                 ctx.setFill(Color.WHITE);

@@ -34,6 +34,8 @@ public class FurnaceUi extends BlockUi implements UiOpenable {
         double fY = (gameHeight - height) / 2;
         ctx.drawImage(img, fX, fY, width, height);
 
+        fillText(ctx, "Furnace", fX + 136, fY + 6);
+
         if (furnace.energyTime > 0) {
             final int imgSize = 14;
             final int size = 28;

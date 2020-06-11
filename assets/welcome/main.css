@@ -1,11 +1,11 @@
 @font-face {
-    font-family: Minecraft;
-    src: url('/minecraft.ttf');
+    -fx-font-family: Minecraftia;
+    src: url('/minecraftia.ttf');
 }
 
 .mc-button {
-    -fx-font-family: Minecraft;
-    -fx-font-size: 18;
+    -fx-font-family: Minecraftia;
+    -fx-font-size: 16;
     -fx-text-fill: white;
     -fx-background-image: url('button_normal.png');
     -fx-background-repeat: no-repeat;

@@ -28,6 +28,8 @@ public class ChestUi extends BlockUi implements UiOpenable {
         double cY = (gameHeight - height) / 2;
         ctx.drawImage(img, cX, cY, width, height);
 
+        fillText(ctx, "Chest", cX + 16, cY + 6);
+
         fillRowItems(storage, ctx, cX + 12, cY + 28, 0, itemDefaultSize, itemBorderWidth);
         fillRowItems(storage, ctx, cX + 12, cY + 64, 9, itemDefaultSize, itemBorderWidth);
         fillRowItems(storage, ctx, cX + 12, cY + 100, 18, itemDefaultSize, itemBorderWidth);
