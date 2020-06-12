@@ -21,16 +21,10 @@ import net.maple3142.craft2d.game.block.Loopable;
 import net.maple3142.craft2d.game.entity.Entity;
 import net.maple3142.craft2d.game.entity.FloatingItem;
 import net.maple3142.craft2d.game.entity.Player;
-import net.maple3142.craft2d.game.item.ItemStack;
 import net.maple3142.craft2d.game.item.PlaceableItem;
-import net.maple3142.craft2d.game.item.block.*;
-import net.maple3142.craft2d.game.item.ingredient.Coal;
-import net.maple3142.craft2d.game.item.ingredient.IronIngot;
-import net.maple3142.craft2d.game.item.ingredient.Stick;
-import net.maple3142.craft2d.game.item.tool.WoodAxe;
-import net.maple3142.craft2d.game.item.tool.WoodShovel;
 import net.maple3142.craft2d.game.ui.BlockBreaking;
 import net.maple3142.craft2d.game.ui.UiOpenable;
+import net.maple3142.craft2d.game.ui.pause.PauseUi;
 import net.maple3142.craft2d.game.utils.Callback;
 import net.maple3142.craft2d.game.utils.MouseTracker;
 import net.maple3142.craft2d.game.utils.Vector2;
@@ -68,7 +62,7 @@ public class Game {
     private final BlockBreaking blockBreaking = new BlockBreaking(this);
     public MouseTracker mouseTracker = new MouseTracker();
     @Expose
-    public World world = World.generateRandom(78456);
+    public World world = World.generateRandom(1234578);
     @Expose
     public Player player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
     @Expose
@@ -154,24 +148,24 @@ public class Game {
         moveCameraAccordingToPlayer((int) widthProperty.get(), (int) heightProperty.get());
 
         // testing inventory
-        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
-        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
-        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
-        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
-        var s = new WoodShovel();
-        s.setDurability(2);
-        player.inventory.storage[5] = new ItemStack(s);
-        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
-        player.inventory.storage[7] = new ItemStack(new WoodAxe());
-        player.inventory.storage[8] = new ItemStack(new CraftingTableBlock(), 64);
-        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
-        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
-        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
-        player.inventory.storage[21] = new ItemStack(new StoneBlock());
-        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
-        player.inventory.storage[28] = new ItemStack(new StoneBlock());
-        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
+//        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
+//        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
+//        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
+//        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
+//        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
+//        var s = new WoodShovel();
+//        s.setDurability(2);
+//        player.inventory.storage[5] = new ItemStack(s);
+//        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
+//        player.inventory.storage[7] = new ItemStack(new WoodAxe());
+//        player.inventory.storage[8] = new ItemStack(new CraftingTableBlock(), 64);
+//        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
+//        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
+//        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
+//        player.inventory.storage[21] = new ItemStack(new StoneBlock());
+//        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
+//        player.inventory.storage[28] = new ItemStack(new StoneBlock());
+//        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
     }
 
     public void stop() {
@@ -404,20 +398,26 @@ public class Game {
         pressedKeys.remove(event.getCode());
     }
 
+    private PauseUi pauseUi = new PauseUi(this);
+
     public void onKeyPressed(KeyEvent event) {
         pressedKeys.add(event.getCode());
 
         if (event.getCode() == KeyCode.E) {
             if (currentUi == null) {
                 openUi(player.inventory);
-            } else {
-                currentUi.onClosed(this);
-                currentUi = null;
+            } else if (!(currentUi instanceof PauseUi)) {
+                // pause ui shouldn't be closed by E
+                closeUi();
             }
         }
 
         if (event.getCode() == KeyCode.ESCAPE) {
-            stop();
+            if (currentUi == null) {
+                openUi(pauseUi);
+            } else {
+                closeUi();
+            }
         }
     }
 
@@ -469,6 +469,11 @@ public class Game {
     public void openUi(UiOpenable ui) {
         currentUi = ui;
         currentUi.onOpened(this);
+    }
+
+    public void closeUi() {
+        currentUi.onClosed(this);
+        currentUi = null;
     }
 
     public void setExitCallback(Callback f) {
