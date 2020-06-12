@@ -3,6 +3,10 @@
     -fx-background-position: center;
 }
 
-.seed-group, .save-location-group {
+.screen-label, .save-location-group {
     -fx-padding: 0 0 50px 0;
+}
+
+.seed-group {
+    -fx-padding: 0 0 30px 0;
 }

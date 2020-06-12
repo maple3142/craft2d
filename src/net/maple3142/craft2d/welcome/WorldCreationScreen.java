@@ -23,6 +23,9 @@ public class WorldCreationScreen {
             root.requestFocus(); // take focus from seed field
         });
 
+        var screenLabel = new MinecraftLabel("Create New World");
+        screenLabel.getStyleClass().add("screen-label");
+
         var seedField = new MinecraftTextField();
         seedField.setPromptText("Leave blank for a random seed");
         var seedLabel = new MinecraftLabel("Seed for the world generator");
@@ -55,7 +58,7 @@ public class WorldCreationScreen {
         cancel.setOnAction(event -> stage.setScene(new WelcomeScreen(stage).getScene()));
         btnContainer.getChildren().addAll(create, cancel);
 
-        root.getChildren().addAll(seedGroup, saveLocationGroup, btnContainer);
+        root.getChildren().addAll(screenLabel, seedGroup, saveLocationGroup, btnContainer);
         scene = new Scene(root);
         scene.getStylesheets().addAll("/welcome/controls.css", "/welcome/world_creation.css");
     }
