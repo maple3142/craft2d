@@ -18,11 +18,23 @@
     -fx-background-image: url('/ui/button_hovered.png');
 }
 
-.root {
-    -fx-background-image: url('background.png');
-    -fx-background-position: center;
+.mc-text-field {
+    -fx-background-color: black;
+    -fx-border-color: #B3B1AD;
+    -fx-border-width: 2;
+    -fx-border-style: solid;
+    -fx-font-family: Minecraftia;
+    -fx-font-size: 16;
+    -fx-text-fill: #F2F2F4;
+    -fx-prompt-text-fill: rgba(242, 242, 244, 0.5);
 }
 
-.title-wrapper {
-    -fx-padding: 0 0 200px 0;
+.mc-label {
+    -fx-font-family: Minecraftia;
+    -fx-font-size: 16;
+    -fx-text-fill: white;
+}
+
+.mc-control-group .mc-label {
+    -fx-text-fill: #A09E99;
 }

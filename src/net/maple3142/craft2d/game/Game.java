@@ -62,9 +62,9 @@ public class Game {
     private final BlockBreaking blockBreaking = new BlockBreaking(this);
     public MouseTracker mouseTracker = new MouseTracker();
     @Expose
-    public World world = World.generateRandom(1234578);
+    public World world;
     @Expose
-    public Player player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
+    public Player player;
     @Expose
     public Set<Entity> entities = new HashSet<>();
     @Expose
@@ -73,9 +73,9 @@ public class Game {
     private UiOpenable currentUi = null;
     private int lastTimeMs;
     @Expose
-    private double leftX = world.spawnX - 10;
+    private double leftX;
     @Expose
-    private double bottomY = World.worldHeight;
+    private double bottomY;
     private AnimationTimer timer;
     private Callback exitCallback;
 
@@ -132,6 +132,14 @@ public class Game {
         sunCtx.setFont(FontProvider.minecraftFontNormal);
         uiBgCtx.setFont(FontProvider.minecraftFontNormal);
         uiCtx.setFont(FontProvider.minecraftFontNormal);
+    }
+
+    public Game(long seed) {
+        this();
+        world = World.generateRandom(seed);
+        player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
+        leftX = world.spawnX - 10;
+        bottomY = World.worldHeight;
     }
 
     public void start() {

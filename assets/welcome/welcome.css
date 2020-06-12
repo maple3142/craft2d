@@ -1,0 +1,8 @@
+.root {
+    -fx-background-image: url('background.png');
+    -fx-background-position: center;
+}
+
+.title-wrapper {
+    -fx-padding: 0 0 200px 0;
+}

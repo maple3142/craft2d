@@ -1,0 +1,8 @@
+.root {
+    -fx-background-image: url('dirt_background.png');
+    -fx-background-position: center;
+}
+
+.seed-group, .save-location-group {
+    -fx-padding: 0 0 50px 0;
+}
