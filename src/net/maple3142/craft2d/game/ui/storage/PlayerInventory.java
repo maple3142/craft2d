@@ -1,13 +1,10 @@
 package net.maple3142.craft2d.game.ui.storage;
 
 import com.google.gson.annotations.Expose;
-import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
-import net.maple3142.craft2d.game.FontProvider;
 import net.maple3142.craft2d.game.Game;
 import net.maple3142.craft2d.game.crafting.CraftingInput;
 import net.maple3142.craft2d.game.crafting.RecipeRegistry;
@@ -226,5 +223,11 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
             return (Tool) stk.getItem();
         }
         return null;
+    }
+
+    @Override
+    public void onClosed(Game game) {
+        super.onClosed(game);
+        clearStorageByDropping(craftingStorage, game);
     }
 }

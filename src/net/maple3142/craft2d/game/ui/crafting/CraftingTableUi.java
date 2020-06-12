@@ -30,7 +30,7 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     @Override
     public void onClosed(Game game) {
         super.onClosed(game);
-        storage = new ItemStack[9];
+        clearStorageByDropping(storage, game);
     }
 
     @Override

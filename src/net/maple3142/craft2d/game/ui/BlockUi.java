@@ -242,13 +242,26 @@ public abstract class BlockUi implements UiOpenable {
         dropDraggedStack(game);
     }
 
+    public void createFloatingItem(Game game, ItemStack stk) {
+        var pos = game.player.position;
+        var mul = game.player.facing == PlayerFacing.LEFT ? -1 : 1;
+        var newPos = new Vector2(pos.x + 1.5 * mul, pos.y);
+        var item = new FloatingItem(stk, newPos);
+        game.entities.add(item);
+    }
+
+    public void clearStorageByDropping(ItemStack[] storage, Game game) {
+        for (int i = 0; i < storage.length; i++) {
+            if (storage[i] != null) {
+                createFloatingItem(game, storage[i]);
+                storage[i] = null;
+            }
+        }
+    }
+
     public void dropDraggedStack(Game game) {
         if (draggedStack != null) {
-            var pos = game.player.position;
-            var mul = game.player.facing == PlayerFacing.LEFT ? -1 : 1;
-            var newPos = new Vector2(pos.x + 1.5 * mul, pos.y);
-            var item = new FloatingItem(draggedStack, newPos);
-            game.entities.add(item);
+            createFloatingItem(game, draggedStack);
             draggedStack = null;
         }
     }
