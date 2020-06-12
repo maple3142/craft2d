@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.*;
+import net.maple3142.craft2d.GlobalKeyBinding;
 import net.maple3142.craft2d.game.Game;
 import net.maple3142.craft2d.game.utils.IOHelper;
 
@@ -48,6 +49,7 @@ public class Utils {
         });
         stage.setScene(game.getScene());
         stage.setOnCloseRequest(closeHandler);
+        game.setKeyBinding(GlobalKeyBinding.binding);
         game.start();
     }
 

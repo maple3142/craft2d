@@ -22,6 +22,8 @@ import net.maple3142.craft2d.game.entity.Entity;
 import net.maple3142.craft2d.game.entity.FloatingItem;
 import net.maple3142.craft2d.game.entity.Player;
 import net.maple3142.craft2d.game.item.PlaceableItem;
+import net.maple3142.craft2d.game.key.KeyBinding;
+import net.maple3142.craft2d.game.key.KeyType;
 import net.maple3142.craft2d.game.ui.BlockBreaking;
 import net.maple3142.craft2d.game.ui.UiOpenable;
 import net.maple3142.craft2d.game.ui.pause.PauseUi;
@@ -78,6 +80,7 @@ public class Game {
     private double bottomY;
     private AnimationTimer timer;
     private Callback exitCallback;
+    private KeyBinding keyBinding = new KeyBinding();
 
     public Game() {
         this.mainCanvas = new Canvas();
@@ -140,6 +143,10 @@ public class Game {
         player = new Player(world, world.spawnX + 0.5, world.spawnY + 1);
         leftX = world.spawnX - 10;
         bottomY = World.worldHeight;
+    }
+
+    public void setKeyBinding(KeyBinding binding) {
+        keyBinding = binding;
     }
 
     public void start() {
@@ -285,16 +292,17 @@ public class Game {
         // move entities
         {
             if (currentUi == null) {
-                if (pressedKeys.contains(KeyCode.D)) {
+                if (pressedKeys.contains(keyBinding.getKeyCode(KeyType.RIGHT))) {
                     player.moveRight();
                 }
-                if (pressedKeys.contains(KeyCode.A)) {
+                if (pressedKeys.contains(keyBinding.getKeyCode(KeyType.LEFT))) {
                     player.moveLeft();
                 }
-                if (pressedKeys.contains(KeyCode.W) || pressedKeys.contains(KeyCode.SPACE)) {
+                if (pressedKeys.contains(keyBinding.getKeyCode(KeyType.JUMP1)) ||
+                        pressedKeys.contains(keyBinding.getKeyCode(KeyType.JUMP2))) {
                     player.jump();
                 }
-                if (pressedKeys.contains(KeyCode.S)) {
+                if (pressedKeys.contains(keyBinding.getKeyCode(KeyType.FACE))) {
                     player.faceFront();
                 }
                 if (DEBUG_FREE_CAMERA_MOVING) {
@@ -385,7 +393,7 @@ public class Game {
                     if (blk != null) {
                         int pX = (int) ((x - leftX) * blockWidth);
                         int pY = (int) ((topY - y - 1) * blockHeight);
-                        if (pX >= -blockWidth && pX < width && pY >= 0 && pY < height) {
+                        if (pX >= -blockWidth && pX < width && pY >= -blockHeight && pY < height) {
                             blk.draw(mainCtx, pX, pY, blockWidth, blockHeight);
                         }
                     }
@@ -403,15 +411,23 @@ public class Game {
     }
 
     public void onKeyReleased(KeyEvent event) {
-        pressedKeys.remove(event.getCode());
+        var code = event.getCode();
+        if (event.getCharacter().equals("\u0000") && code == KeyCode.UNDEFINED) {
+            code = KeyCode.SPACE; // I don't know why it is sometimes UNDEFINED
+        }
+        pressedKeys.remove(code);
     }
 
     private PauseUi pauseUi = new PauseUi(this);
 
     public void onKeyPressed(KeyEvent event) {
-        pressedKeys.add(event.getCode());
+        var code = event.getCode();
+        if (event.getCharacter().equals("\u0000") && code == KeyCode.UNDEFINED) {
+            code = KeyCode.SPACE; // I don't know why it is sometimes UNDEFINED
+        }
+        pressedKeys.add(code);
 
-        if (event.getCode() == KeyCode.E) {
+        if (code == keyBinding.getKeyCode(KeyType.OPEN_INVENTORY)) {
             if (currentUi == null) {
                 openUi(player.inventory);
             } else if (!(currentUi instanceof PauseUi)) {
@@ -420,7 +436,7 @@ public class Game {
             }
         }
 
-        if (event.getCode() == KeyCode.ESCAPE) {
+        if (code == keyBinding.getKeyCode(KeyType.PAUSE)) {
             if (currentUi == null) {
                 openUi(pauseUi);
             } else {

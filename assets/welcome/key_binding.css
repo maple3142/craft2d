@@ -1,0 +1,8 @@
+.root {
+    -fx-background-image: url('dirt_background.png');
+    -fx-background-position: center;
+}
+
+.title, .key-list {
+    -fx-padding: 0 0 60px 0;
+}
