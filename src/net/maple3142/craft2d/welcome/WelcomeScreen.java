@@ -1,5 +1,6 @@
 package net.maple3142.craft2d.welcome;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -26,7 +27,7 @@ public class WelcomeScreen {
         titleWrapper.getStyleClass().add("title-wrapper");
 
         var newWorld = new MinecraftButton("New World");
-        newWorld.setOnAction(event -> stage.setScene(new WorldCreationScreen(stage).getScene()));
+        newWorld.setOnAction((ActionEvent event) -> stage.setScene(new WorldCreationScreen(stage).getScene()));
 
         var load = new MinecraftButton("Load");
         load.setOnAction(event -> {

@@ -30,6 +30,7 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
     @Override
     public void onClosed(Game game) {
         super.onClosed(game);
+        storage[9] = null; // prevent crafting display being dropped
         clearStorageByDropping(storage, game);
     }
 

@@ -16,13 +16,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        var welcome = new WelcomeScreen(stage);
         stage.setTitle("Craft2d");
         stage.setMinHeight(minHeight);
         stage.setMinWidth(minWidth);
         stage.setHeight(minHeight);
         stage.setWidth(minWidth);
-        stage.setScene(welcome.getScene());
+        stage.setScene(new WelcomeScreen(stage).getScene());
         stage.getIcons().add(new Image(getClass().getResource("/icon.png").toString()));
         stage.setMaximized(true);
         stage.show();

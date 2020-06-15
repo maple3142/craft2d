@@ -228,6 +228,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
     @Override
     public void onClosed(Game game) {
         super.onClosed(game);
+        craftingStorage[4] = null; // prevent crafting display being dropped
         clearStorageByDropping(craftingStorage, game);
     }
 }
