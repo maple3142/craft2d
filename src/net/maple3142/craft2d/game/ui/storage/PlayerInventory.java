@@ -88,6 +88,8 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
         double invY = (gameHeight - inventoryHeight) / 2;
         ctx.drawImage(inventoryImg, invX, invY, inventoryWidth, inventoryHeight);
 
+        ctx.drawImage(game.player.getImage(), invX + 52 + 44.0 / 2, invY + 16 + 20.0 / 2, 60, 120);
+
         fillText(ctx, "Crafting", invX + 172, invY + 24);
 
         fillRowItems(ctx, invX + 12, invY + 280, 0); // the last row

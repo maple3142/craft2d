@@ -54,23 +54,23 @@ public class Player implements Entity {
         }
     }
 
+    public Image getImage() {
+        switch (facing) {
+            case FRONT:
+                return imgFront;
+            case LEFT:
+                return imgLeft;
+            case RIGHT:
+                return imgRight;
+        }
+        return null;
+    }
+
     public void draw(GraphicsContext ctx, double leftX, double topY) {
         int pX = (int) ((position.x - 0.5 - leftX) * Game.blockWidth);
         int pY = (int) ((topY - (position.y + 1)) * Game.blockHeight);
 
-        Image img = null;
-        switch (facing) {
-            case FRONT:
-                img = imgFront;
-                break;
-            case LEFT:
-                img = imgLeft;
-                break;
-            case RIGHT:
-                img = imgRight;
-                break;
-        }
-        ctx.drawImage(img, pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
+        ctx.drawImage(getImage(), pX, pY, entityWidth * Game.blockWidth, entityHeight * Game.blockHeight);
     }
 
     @Override
