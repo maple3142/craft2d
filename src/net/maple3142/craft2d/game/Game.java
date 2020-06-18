@@ -469,7 +469,10 @@ public class Game {
 
             if (event.isSecondaryButtonDown() && inRange) {
                 var stk = player.inventory.getSelectedItemStack();
-                if (stk != null && world.blocks[by][bx] == null) {
+                int px = (int) player.position.x;
+                int py = (int) player.position.y;
+                boolean isOnPlayer = (bx == px) && (by == py || by == py - 1);
+                if (stk != null && world.blocks[by][bx] == null && !isOnPlayer) {
                     var item = stk.getItem();
                     if (item instanceof PlaceableItem) {
                         var blk = ((PlaceableItem) item).getPlacedBlock();
