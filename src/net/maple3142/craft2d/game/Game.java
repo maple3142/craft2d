@@ -338,7 +338,7 @@ public class Game {
             l.loop(dt);
         }
 
-        boolean isCameraMoved = DEBUG_FREE_CAMERA_MOVING || moveCameraAccordingToPlayer(width, height);
+        moveCameraAccordingToPlayer(width, height);
 
         entityCtx.clearRect(0, 0, width, height);
 
@@ -401,13 +401,11 @@ public class Game {
             }
         }
 
-        if (isCameraMoved) {
-            // render sun
-            int sunLeft = (int) (width / 5 - leftX / 100);
-            int sunTop = (int) (height / 6 + bottomY / 10);
-            sunCtx.clearRect(0, 0, width, height);
-            sunCtx.drawImage(sun, sunLeft, sunTop, 100, 100);
-        }
+        // render sun
+        int sunLeft = (int) (width / 5 - leftX / 100);
+        int sunTop = (int) (height / 6 + bottomY / 10);
+        sunCtx.clearRect(0, 0, width, height);
+        sunCtx.drawImage(sun, sunLeft, sunTop, 100, 100);
     }
 
     public void onKeyReleased(KeyEvent event) {
