@@ -338,7 +338,7 @@ public class Game {
             l.loop(dt);
         }
 
-        moveCameraAccordingToPlayer(width, height);
+        if (!DEBUG_FREE_CAMERA_MOVING) moveCameraAccordingToPlayer(width, height);
 
         entityCtx.clearRect(0, 0, width, height);
 
