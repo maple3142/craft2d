@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import net.maple3142.craft2d.game.FontProvider;
 import net.maple3142.craft2d.game.Game;
@@ -264,6 +265,30 @@ public abstract class BlockUi implements UiOpenable {
             createFloatingItem(game, draggedStack);
             draggedStack = null;
         }
+    }
+
+    private final double hPad = 7;
+    private final double vPad = 4;
+    private final double borderRadius = 5;
+    private final Color borderColor = Color.web("#290560");
+
+    public void drawItemStackLabel(GraphicsContext ctx, ItemStack stk, double x, double y) {
+        if (stk == null) return;
+        String name = stk.getItem().getName();
+        var t = new Text(name);
+        t.setFont(FontProvider.minecraftFontBig);
+        var bounds = t.getLayoutBounds();
+        double width = bounds.getWidth();
+        double height = bounds.getHeight();
+        ctx.setFill(Color.BLACK);
+        ctx.strokeRoundRect(x, y, width + 2 * hPad, height + 2 * vPad, borderRadius, borderRadius);
+        ctx.setStroke(borderColor);
+        ctx.fillRoundRect(x, y, width + 2 * hPad, height + 2 * vPad, borderRadius, borderRadius);
+        ctx.setTextAlign(TextAlignment.LEFT);
+        ctx.setTextBaseline(VPos.TOP);
+        ctx.setFill(Color.WHITE);
+        ctx.setFont(FontProvider.minecraftFontBig);
+        ctx.fillText(name, x + hPad, y + vPad);
     }
 
     protected abstract int calculateIdFromRelativePosition(double x, double y); // -1=noop -2=outside of ui

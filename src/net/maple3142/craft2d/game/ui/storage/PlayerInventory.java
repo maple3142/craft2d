@@ -110,6 +110,15 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
         }
 
         drawDraggedStack(ctx, mouse, itemDefaultSize);
+
+        int id = calculateIdFromRelativePosition(mouse.getX() - invX, mouse.getY() - invY);
+        if (id >= 0) {
+            drawItemStackLabel(ctx, storage[id], mouse.getX() + 20, mouse.getY());
+        }
+        int id2 = calculateIdFromRelativePositionForCrafting(mouse.getX() - invX, mouse.getY() - invY);
+        if (id2 >= 0) {
+            drawItemStackLabel(ctx, craftingStorage[id2], mouse.getX() + 20, mouse.getY());
+        }
     }
 
     @Override
@@ -149,7 +158,7 @@ public class PlayerInventory extends BlockUi implements UiOpenable {
             col = (int) ((x - 174) / 35);
             row = (int) ((y - 48) / 35);
         }
-        if (row != -1 && col != -1) {
+        if (0 <= row && row <= 1 && 0 <= col && col <= 2) {
             return row * 2 + col;
         }
         return -1;

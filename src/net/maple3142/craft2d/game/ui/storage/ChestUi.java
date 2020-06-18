@@ -42,6 +42,16 @@ public class ChestUi extends BlockUi implements UiOpenable {
         }
 
         drawDraggedStack(ctx, mouse, itemDefaultSize);
+
+        int id = calculateIdFromRelativePosition(mouse.getX() - cX, mouse.getY() - cY);
+        if (id >= 0) {
+            drawItemStackLabel(ctx, storage[id], mouse.getX() + 20, mouse.getY());
+        }
+        var inv = game.player.inventory;
+        int id2 = inv.calculateIdFromRelativePosition(mouse.getX() - cX, mouse.getY() - cY);
+        if (id2 >= 0) {
+            drawItemStackLabel(ctx, inv.storage[id2], mouse.getX() + 20, mouse.getY());
+        }
     }
 
     @Override

@@ -62,6 +62,16 @@ public class CraftingTableUi extends BlockUi implements UiOpenable {
         }
 
         drawDraggedStack(ctx, mouse, itemDefaultSize);
+
+        int id = calculateIdFromRelativePosition(mouse.getX() - ctX, mouse.getY() - ctY);
+        if (id >= 0) {
+            drawItemStackLabel(ctx, storage[id], mouse.getX() + 20, mouse.getY());
+        }
+        var inv = game.player.inventory;
+        int id2 = inv.calculateIdFromRelativePosition(mouse.getX() - ctX, mouse.getY() - ctY);
+        if (id2 >= 0) {
+            drawItemStackLabel(ctx, inv.storage[id2], mouse.getX() + 20, mouse.getY());
+        }
     }
 
 

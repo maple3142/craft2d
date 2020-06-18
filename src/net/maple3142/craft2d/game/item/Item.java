@@ -8,4 +8,8 @@ public interface Item {
     boolean equals(Item item);
 
     int getId();
+
+    default String getName() {
+        return getClass().getSimpleName();
+    }
 }
