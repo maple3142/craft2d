@@ -29,6 +29,7 @@ public class ChestUi extends BlockUi implements UiOpenable {
         ctx.drawImage(img, cX, cY, width, height);
 
         fillText(ctx, "Chest", cX + 16, cY + 6);
+        fillText(ctx, "Inventory", cX + 14, cY + 142);
 
         fillRowItems(storage, ctx, cX + 12, cY + 28, 0, itemDefaultSize, itemBorderWidth);
         fillRowItems(storage, ctx, cX + 12, cY + 64, 9, itemDefaultSize, itemBorderWidth);

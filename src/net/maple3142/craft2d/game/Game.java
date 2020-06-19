@@ -161,26 +161,6 @@ public class Game {
         root.requestFocus();
         lastTimeMs = (int) (System.nanoTime() / 1000000);
         moveCameraAccordingToPlayer((int) widthProperty.get(), (int) heightProperty.get());
-
-        // testing inventory
-//        player.inventory.storage[0] = new ItemStack(new FurnaceBlock());
-//        player.inventory.storage[1] = new ItemStack(new IronIngot(), 64);
-//        player.inventory.storage[2] = new ItemStack(new CobblestoneBlock(), 64);
-//        player.inventory.storage[3] = new ItemStack(new Stick(), 64);
-//        player.inventory.storage[4] = new ItemStack(new Coal(), 64);
-//        var s = new WoodShovel();
-//        s.setDurability(2);
-//        player.inventory.storage[5] = new ItemStack(s);
-//        player.inventory.storage[6] = new ItemStack(new CraftingTableBlock());
-//        player.inventory.storage[7] = new ItemStack(new WoodAxe());
-//        player.inventory.storage[8] = new ItemStack(new CraftingTableBlock(), 64);
-//        player.inventory.storage[9] = new ItemStack(new PlankOakBlock(), 64);
-//        player.inventory.storage[16] = new ItemStack(new LogOakBlock(), 64);
-//        player.inventory.storage[17] = new ItemStack(new StoneBlock(), 13);
-//        player.inventory.storage[21] = new ItemStack(new StoneBlock());
-//        player.inventory.storage[25] = new ItemStack(new GrassBlock(), 64);
-//        player.inventory.storage[28] = new ItemStack(new StoneBlock());
-//        player.inventory.storage[35] = new ItemStack(new DirtBlock(), 26);
     }
 
     public void stop() {
